@@ -10,6 +10,9 @@
 #ifndef HEIGHT
 #define HEIGHT 600
 #endif
+#ifndef CELL_SIZE
+#define CELL_SIZE 10
+#endif
 
 typedef struct s_player
 {
@@ -53,6 +56,7 @@ typedef struct s_scene
 	t_ceiling ceiling;
 	t_floor floor;
 	t_player player;
+	int **map;
 }	t_scene;
 
 //MAIN?

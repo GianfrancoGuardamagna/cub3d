@@ -1,4 +1,5 @@
 #include "cub3d.h"
+#include <stdio.h> //ELIMINAR
 
 unsigned long createRGB(int r, int g, int b)
 {
@@ -51,9 +52,40 @@ void render_ceiling(t_scene *scene)
 	}
 }
 
+void render_player(t_scene *scene)
+{
+	int y;
+	int x;
+
+	y = 0;
+	while(y < HEIGHT)
+	{
+		x = 0;
+		while(x < WIDTH)
+		{
+			if((x >= scene->player.pos_x && x <= (scene->player.pos_x + 30)) && (y >= scene->player.pos_y && y <= (scene->player.pos_y + 30)))
+			{
+				pixel_put(&scene->img, x, y, 0xffffffff);
+			}
+			x++;
+		}
+		y++;
+	}
+}
+
 int main(void)
 {
 	t_scene *scene;
+	int map[5][5] = 
+	{
+		{1, 1, 1, 1, 1},
+		{1, 0, 1, 2, 1},
+		{1, 0, 0, 0, 1},
+		{1, 0, 0, 1, 1},
+		{1, 1, 1, 1, 1}
+	};
+
+	(void) map;
 
 	scene = malloc(sizeof(t_scene));
 	if (!scene)
@@ -68,14 +100,15 @@ int main(void)
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
 
-	scene->player.pos_x = 0.0;
-	scene->player.pos_y = 0.0;
+	scene->player.pos_x = 100.0;
+	scene->player.pos_y = 200.0;
 	scene->player.dir_x = 0.0;
 	scene->player.dir_y = 0.0;
 	scene->player.speed = 0.05;
 
-	render_floor(scene);
-	render_ceiling(scene);
+//	render_floor(scene);
+//	render_ceiling(scene);
+	render_player(scene);
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	mlx_loop(scene->mlx_connection);
 	scene_cleanup(scene);
