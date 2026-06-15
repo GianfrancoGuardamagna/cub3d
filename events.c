@@ -40,12 +40,12 @@ int key_handler(int keysym, t_scene *scene)
 
 	if (keysym == XK_Escape)
 		close_handler(scene);
-	else if (keysym == XK_w)
+	else if (keysym == XK_Up)
 	{
 		scene->player.pos_x += move_x;
 		scene->player.pos_y += move_y;
 	}
-	else if (keysym == XK_s)
+	else if (keysym == XK_Down)
 	{
 		scene->player.pos_x -= move_x;
 		scene->player.pos_y -= move_y;
@@ -53,17 +53,17 @@ int key_handler(int keysym, t_scene *scene)
 	else if (keysym == XK_Left)
 	{
 		old_dir_x = scene->player.dir_x;
-		scene->player.dir_x = old_dir_x * cos(0.05) - scene->player.dir_y * sin(0.05);
-		scene->player.dir_y = old_dir_x * sin(0.05) + scene->player.dir_y * cos(0.05);
+		scene->player.dir_x = old_dir_x * cos(-0.10) - scene->player.dir_y * sin(-0.10);
+		scene->player.dir_y = old_dir_x * sin(-0.10) + scene->player.dir_y * cos(-0.10);
 	}
 	else if (keysym == XK_Right)
 	{
 		old_dir_x = scene->player.dir_x;
-		scene->player.dir_x = old_dir_x * cos(-0.05) - scene->player.dir_y * sin(-0.05);
-		scene->player.dir_y = old_dir_x * sin(-0.05) + scene->player.dir_y * cos(-0.05);
+		scene->player.dir_x = old_dir_x * cos(0.10) - scene->player.dir_y * sin(0.10);
+		scene->player.dir_y = old_dir_x * sin(0.10) + scene->player.dir_y * cos(0.10);
 	}
 
-	render_floor(scene);
+	render_player(scene);
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	return (0);
 }

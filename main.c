@@ -1,5 +1,4 @@
 #include "cub3d.h"
-#include <stdio.h> //ELIMINAR
 
 unsigned long createRGB(int r, int g, int b)
 {
@@ -65,8 +64,37 @@ void render_player(t_scene *scene)
 		{
 			if((x >= scene->player.pos_x && x <= (scene->player.pos_x + 30)) && (y >= scene->player.pos_y && y <= (scene->player.pos_y + 30)))
 			{
-				pixel_put(&scene->img, x, y, 0xffffffff);
+				pixel_put(&scene->img, x, y, scene->player.color);
 			}
+			else
+				pixel_put(&scene->img, x, y, 0x00000000);
+			x++;
+		}
+		y++;
+	}
+}
+
+//El map habria que maloquearlo en el main y pasarlo como int **
+//El map deberia estar en la estructura de scene para poder pasarlo a los eventos sin problema
+void render_map(t_scene *scene, int map_width, int map_height, int map[][5])
+{
+	int y;
+	int x;
+	int cell_width;
+	int cell_height;
+	(void) map;
+
+	cell_width = WIDTH / map_width;
+	cell_height = HEIGHT / map_height;
+
+	y = 0;
+	while(y < HEIGHT)
+	{
+		x = 0;
+		while(x < WIDTH)
+		{
+			if((y % cell_height) == 0 || (x % cell_width) == 0)
+				pixel_put(&scene->img, x, y, scene->player.color);
 			x++;
 		}
 		y++;
@@ -95,7 +123,6 @@ int main(void)
 	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
 	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
 	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
-	events_init(scene);
 
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
@@ -103,9 +130,13 @@ int main(void)
 	scene->player.pos_x = 100.0;
 	scene->player.pos_y = 200.0;
 	scene->player.dir_x = 0.0;
-	scene->player.dir_y = 0.0;
-	scene->player.speed = 0.05;
+	scene->player.dir_y = -1.0;
+	scene->player.speed = 10;
+	scene->player.color = 0xffffffff;
 
+	events_init(scene);
+
+//	render_map(scene, 5, 5, map);
 //	render_floor(scene);
 //	render_ceiling(scene);
 	render_player(scene);

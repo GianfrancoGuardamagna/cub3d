@@ -3,6 +3,8 @@
 #include <X11/X.h>
 #include <X11/keysym.h>
 #include <stdlib.h>
+#include <stdio.h> //ELIMINAR
+#include <unistd.h> //ELIMINAR
 
 #ifndef WIDTH
 #define WIDTH 900
@@ -21,6 +23,7 @@ typedef struct s_player
 	double	dir_x;
 	double	dir_y;
 	double	speed;
+	unsigned long color;
 }	t_player;
 
 typedef struct s_floor
@@ -60,7 +63,7 @@ typedef struct s_scene
 }	t_scene;
 
 //MAIN?
-void render_floor(t_scene *scene);
+void render_player(t_scene *scene);
 
 //EVENTS
 void	scene_cleanup(t_scene *scene);
