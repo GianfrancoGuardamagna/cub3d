@@ -63,7 +63,12 @@ int key_handler(int keysym, t_scene *scene)
 		scene->player.dir_y = old_dir_x * sin(0.10) + scene->player.dir_y * cos(0.10);
 	}
 
-	render_player(scene);
+	render_map(scene);
+	DDA(scene,
+	scene->player.pos_x + 15,
+	scene->player.pos_y + 15,
+	scene->player.pos_x + 15 + (scene->player.dir_x * 200),
+	scene->player.pos_y + 15 + (scene->player.dir_y * 200));
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	return (0);
 }

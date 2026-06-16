@@ -15,6 +15,12 @@
 #ifndef CELL_SIZE
 #define CELL_SIZE 10
 #endif
+#ifndef MAP_WIDTH
+#define MAP_WIDTH 5
+#endif
+#ifndef MAP_HEIGHT
+#define MAP_HEIGHT 5
+#endif
 
 typedef struct s_player
 {
@@ -64,6 +70,8 @@ typedef struct s_scene
 
 //MAIN?
 void render_player(t_scene *scene);
+void render_map(t_scene *scene);
+void DDA(t_scene *scene, int X0, int Y0, int X1, int Y1);
 
 //EVENTS
 void	scene_cleanup(t_scene *scene);
