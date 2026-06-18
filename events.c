@@ -29,6 +29,24 @@ int	close_handler(t_scene *scene)
 	exit(0);
 }
 
+void clean_img(t_scene *scene)
+{
+	int x;
+	int y;
+
+	x = 0;
+	while(x < WIDTH)
+	{
+		y = 0;
+		while(y < HEIGHT)
+		{
+			pixel_put(&scene->img, x, y, 0x00000000);
+			y++;
+		}
+		x++;
+	}
+}
+
 int key_handler(int keysym, t_scene *scene)
 {
 	double	move_x;
@@ -55,20 +73,29 @@ int key_handler(int keysym, t_scene *scene)
 		old_dir_x = scene->player.dir_x;
 		scene->player.dir_x = old_dir_x * cos(-0.10) - scene->player.dir_y * sin(-0.10);
 		scene->player.dir_y = old_dir_x * sin(-0.10) + scene->player.dir_y * cos(-0.10);
+		scene->player.angle -= 10;
+		if(scene->player.angle < 0)
+			scene->player.angle += 360;
 	}
 	else if (keysym == XK_Right)
 	{
 		old_dir_x = scene->player.dir_x;
 		scene->player.dir_x = old_dir_x * cos(0.10) - scene->player.dir_y * sin(0.10);
 		scene->player.dir_y = old_dir_x * sin(0.10) + scene->player.dir_y * cos(0.10);
+		scene->player.angle += 10;
+		if(scene->player.angle > 360)
+			scene->player.angle -= 360;
 	}
 
-	render_map(scene);
+	/*render_map(scene);
 	DDA(scene,
-	scene->player.pos_x + 15,
-	scene->player.pos_y + 15,
-	scene->player.pos_x + 15 + (scene->player.dir_x * 200),
-	scene->player.pos_y + 15 + (scene->player.dir_y * 200));
+	scene->player.pos_x,
+	scene->player.pos_y,
+	scene->player.pos_x + (scene->player.dir_x * 200),
+	scene->player.pos_y + (scene->player.dir_y * 200));*/
+	//COMO HACER PARA LIMPIAR LA IMAGEN?
+	clean_img(scene);
+	draw_fov(scene);
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	return (0);
 }

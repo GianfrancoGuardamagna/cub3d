@@ -1,101 +1,20 @@
 #include "cub3d.h"
 
-unsigned long createRGB(int r, int g, int b)
+int is_wall(t_scene *scene, int x, int y)
 {
-	if(r > 255 || g > 255 || b > 255)
-		return 0;
-	return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
+	int cell_width;
+	int cell_height;
 
-void	pixel_put(t_img *img, int x, int y, int color)
-{
-	int	offset;
+	cell_width = WIDTH / MAP_WIDTH;
+	cell_height = HEIGHT / MAP_HEIGHT;
 
-	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
-		return;
-
-	offset = (y * img->line_len) + (x * (img->bpp / 8));
-	*(unsigned int *)(img->pixels_ptr + offset) = color;
-}
-
-int abs(int n)
-{
-	if(n > 0)
-		return n;
+	if(scene->map[y / cell_height][x / cell_width] == 1)
+		return 1;
 	else
-		return n * -1;
+		return 0;
 }
 
-void render_floor(t_scene *scene)
-{
-	int x;
-	double y;
-
-	y = HEIGHT / 1.5;
-	while (y < HEIGHT)
-	{
-		x = 0;
-		while (x < WIDTH)
-		{
-			pixel_put(&scene->img, x, (int) y, scene->floor.color);
-			x++;
-		}
-		y++;
-	}
-}
-
-void render_ceiling(t_scene *scene)
-{
-	int x;
-	double y;
-
-	y = 0;
-	while (y < (HEIGHT / 3))
-	{
-		x = 0;
-		while (x < WIDTH)
-		{
-			pixel_put(&scene->img, x, (int) y, scene->ceiling.color);
-			x++;
-		}
-		y++;
-	}
-}
-
-void render_player(t_scene *scene)
-{
-	int y;
-	int x;
-
-	y = 0;
-	while(y < HEIGHT)
-	{
-		x = 0;
-		while(x < WIDTH)
-		{
-			if((x >= scene->player.pos_x && x <= (scene->player.pos_x + 30)) && (y >= scene->player.pos_y && y <= (scene->player.pos_y + 30)))
-			{
-				pixel_put(&scene->img, x, y, scene->player.color);
-			}
-			x++;
-		}
-		y++;
-	}
-}
-
-void render_ray(t_scene *scene)
-{
-	int i;
-
-	i = 0;
-	while(i <= 100)
-	{
-		pixel_put(&scene->img, scene->player.pos_x + 15, scene->player.pos_y - i, scene->player.color);
-		i++;
-	}
-}
-
-void DDA(t_scene *scene, int X0, int Y0, int X1, int Y1)
+int DDA(t_scene *scene, int X0, int Y0, int X1, int Y1)
 {
 	int i;
 	int dx;
@@ -116,7 +35,7 @@ void DDA(t_scene *scene, int X0, int Y0, int X1, int Y1)
 	else
 		steps = abs(dy);
 
-	// calculate increment in x & y for each steps
+	// calculate increment in x & y for each steps, this is the slop or the hypotenus
 	Xinc = dx / (float)steps;
 	Yinc = dy / (float)steps;
 
@@ -126,11 +45,15 @@ void DDA(t_scene *scene, int X0, int Y0, int X1, int Y1)
 	i = 0;
 	while(i <= steps)
 	{
-		pixel_put(&scene->img, round(X), round(Y), 0xffffffff);
+		if(is_wall(scene, round(X), round(Y)))
+			break;
+		//pixel_put(&scene->img, round(X), round(Y), 0xFF00FF);
 		X += Xinc;
 		Y += Yinc;
 		i++;
 	}
+
+	return i;
 }
 
 //El map habria que maloquearlo en el main y pasarlo como int **
@@ -155,11 +78,11 @@ void render_map(t_scene *scene)
 				pixel_put(&scene->img, x, y, 0xffffffff);
 			else if((x % cell_width) == 0) //GRID
 				pixel_put(&scene->img, x, y, 0xffffffff);
-			else if((x >= scene->player.pos_x && x <= (scene->player.pos_x + 30)) && (y >= scene->player.pos_y && y <= (scene->player.pos_y + 30))) //PLAYER
-			{
+			//else if((x >= scene->player.pos_x && x <= (scene->player.pos_x + 30)) && (y >= scene->player.pos_y && y <= (scene->player.pos_y + 30))) //PLAYER
+			//{
 				//render_ray(scene);
-				pixel_put(&scene->img, x, y, scene->player.color);
-			}
+				//pixel_put(&scene->img, x, y, scene->player.color);
+			//}
 			else if((y % cell_height) != 0 || (x % cell_width) != 0) //WALLS
 			{
 				if(scene->map[y / cell_height][x / cell_width] == 1)
@@ -173,76 +96,63 @@ void render_map(t_scene *scene)
 	}
 }
 
-void calculate_player_position(t_scene *scene)
+//DEBERIA PINTAR CIELO ANTES DE LA LINEA Y SUELO DESPUES
+void draw_vertical_line(t_scene *scene, int height, int pos, unsigned long color)
 {
-	int cell_width;
-	int cell_height;
-	int i;
-	int j;
+	int x;
+	int y;
 
-	cell_width = WIDTH / MAP_WIDTH;
-	cell_height = HEIGHT / MAP_HEIGHT;
-	i = 0;
-	while(i < MAP_HEIGHT)
+	x = 0;
+	while(x < WIDTH)
 	{
-		j = 0;
-		while(j < MAP_WIDTH)
+		if(x == pos)
 		{
-			if(scene->map[i][j] == 'N')
+			y = HEIGHT / 2 - height / 2;
+			//while(y < height && y < HEIGHT)
+			while(y < height && y < HEIGHT)
 			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
-				scene->player.dir_x = 0;
-				scene->player.dir_y = -1;
+				pixel_put(&scene->img, x, y, color);
+				y++;
 			}
-			else if(scene->map[i][j] == 'S')
-			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
-				scene->player.dir_x = 0;
-				scene->player.dir_y = 1;
-			}
-			else if(scene->map[i][j] == 'W')
-			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
-				scene->player.dir_x = -1;
-				scene->player.dir_y = 0;
-			}
-			else if(scene->map[i][j] == 'E')
-			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
-				scene->player.dir_x = 1;
-				scene->player.dir_y = 0;
-			}
-			j++;
 		}
-		i++;
+		x++;
 	}
 }
 
-//Falta manejar el error de malloc
-void populate_map(t_scene *scene, int map_width, int map_height, int map[][5])
+void draw_fov(t_scene *scene)
 {
-	int i;
-	int j;
+	double scale;
+	double offset;
+	double angle;
+	int distance;
+	int visual_height;
+	int x_line;
+	int inc;
 
-	scene->map = malloc(sizeof(int *) * map_height);
-	if(!scene->map)
-		return ;
+	scale = WIDTH / PLAYER_FOV; //FACTOR PARA QUE EL FOV SE ESCALA PARA QUE SEA EL WIDTH DE LA VENTANA
+	offset = scene->player.angle - (PLAYER_FOV/2); //LE RESTA LA MITAD DEL CONO DE VISION PARA COMPRENDER LOS VALORES CORRESPONDIENTES AL CONO, SI MIRO A LOS 90 Y LE RESTO 30 COMIENZO A MIRAR DESDE LOS 60 (HASTA LOS 120)
+	angle = scene->player.angle / (PLAYER_FOV/2); //??
 
-	i = 0;
-	while(i < map_height)
+	inc = PLAYER_FOV;
+	while(angle <= (scene->player.angle + PLAYER_FOV))
 	{
-		j = 0;
-		scene->map[i] = malloc(sizeof(int) * map_width);
-		while(j < map_width)
-		{
-			scene->map[i][j] = map[i][j];
-			j++;
-		}
-		i++;
+		distance = DDA(
+					scene,
+					scene->player.pos_x,
+					scene->player.pos_y,
+					scene->player.pos_x + (scene->player.dir_x * 200) + inc,
+					scene->player.pos_y + (scene->player.dir_y * 200) + inc
+					);
+
+		if(distance <= 0)
+			continue ;
+
+		visual_height = (HEIGHT/distance) * 50; //MIENTRAS MAS CERCA ESTOY, visual_height SE ACERCA A HEIGHT, COMO LA DISTANCIA ES EN PIXELES HAY QUE ESCALARLA UN POCO
+		x_line = (angle - offset) * scale;
+
+		draw_vertical_line(scene, visual_height, x_line, 0xffffffff);
+		angle += 0.5;
+		inc -= 1;
 	}
 }
 
@@ -272,20 +182,18 @@ int main(void)
 
 	populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map);
 	calculate_player_position(scene);
-//	scene->player.pos_x = 100.0; //PRIMERO DIVIDIR LA VENTANA EN CELDAS Y LUEGO SE LE ASIGNA LA POSICION AL JUGADOR CORRESPONDIENTE, EN EL CENTRO DE LA CELDA CON LA ORIENTACIÓN DADA, PERO PRIMERO HAY QUE PROCESAR EL MAPA
-//	scene->player.pos_y = 200.0;
-//	scene->player.dir_x = 0.0;
-//	scene->player.dir_y = -1.0;
 	scene->player.speed = 10;
 	scene->player.color = 0xffffffff;
 
-	
-	render_map(scene);
-	//	render_floor(scene);
-	//	render_ceiling(scene);
-	//	render_player(scene);
-	DDA(scene, scene->player.pos_x, scene->player.pos_y, scene->player.dir_x, scene->player.dir_y);
+	//render_map(scene);
+	/*DDA(scene,
+	scene->player.pos_x,
+	scene->player.pos_y,
+	scene->player.pos_x + (scene->player.dir_x * 200),
+	scene->player.pos_y + (scene->player.dir_y * 200));*/
+	draw_fov(scene);
 	events_init(scene);
+
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	mlx_loop(scene->mlx_connection);
 	scene_cleanup(scene);

@@ -13,7 +13,7 @@
 NAME = cub3d
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SOURCE = 	main.c events.c
+SOURCE = 	main.c events.c renders.c aux.c player.c
 OBJ = $(SOURCE:.c=.o)
 INCLUDE = cub3d.h
 LIBFT_DIR = ./libft
