@@ -7,10 +7,10 @@
 #include <unistd.h> //ELIMINAR
 
 #ifndef WIDTH
-#define WIDTH 300
+#define WIDTH 1000
 #endif
 #ifndef HEIGHT
-#define HEIGHT 200
+#define HEIGHT 500
 #endif
 #ifndef CELL_SIZE
 #define CELL_SIZE 10
@@ -36,7 +36,6 @@ typedef struct s_player
 	double	dir_y;
 	double	angle;
 	double	speed;
-	unsigned long color;
 }	t_player;
 
 typedef struct s_floor
@@ -76,9 +75,10 @@ typedef struct s_scene
 }	t_scene;
 
 //MAIN?
-void render_map(t_scene *scene);
-int DDA(t_scene *scene, int X0, int Y0, int X1, int Y1);
-void draw_fov(t_scene *scene);
+void	render_map(t_scene *scene);
+double	DDA(t_scene *scene, double pos_x, double pos_y, double dir_x, double dir_y);
+void	draw_fov(t_scene *scene);
+int		is_wall(t_scene *scene, int x, int y);
 
 //EVENTS
 void	scene_cleanup(t_scene *scene);

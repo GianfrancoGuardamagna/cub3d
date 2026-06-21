@@ -17,35 +17,35 @@ void calculate_player_position(t_scene *scene)
 		{
 			if(scene->map[i][j] == 'N')
 			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
+				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
+				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 0;
 				scene->player.dir_y = -1;
-				scene->player.angle = 90;
+				scene->player.angle = 0;
 			}
 			else if(scene->map[i][j] == 'S')
 			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
+				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
+				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 0;
 				scene->player.dir_y = 1;
 				scene->player.angle = 270;
 			}
 			else if(scene->map[i][j] == 'W')
 			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
+				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
+				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = -1;
 				scene->player.dir_y = 0;
 				scene->player.angle = 180;
 			}
 			else if(scene->map[i][j] == 'E')
 			{
-				scene->player.pos_x = (WIDTH / (j + 1)) + (cell_width / 2);
-				scene->player.pos_y = (HEIGHT / (i + 1)) + (cell_height / 2);
+				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
+				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 1;
 				scene->player.dir_y = 0;
-				scene->player.angle = 0;
+				scene->player.angle = 90;
 			}
 			j++;
 		}

@@ -14,46 +14,74 @@ int is_wall(t_scene *scene, int x, int y)
 		return 0;
 }
 
-int DDA(t_scene *scene, int X0, int Y0, int X1, int Y1)
+double DDA(t_scene *scene, double pos_x, double pos_y, double dir_x, double dir_y)
 {
-	int i;
-	int dx;
-	int dy;
-	int steps;
-	float Xinc;
-	float Yinc;
-	float X;
-	float Y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	double	cell_width;
+	double	cell_height;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	double	dist;
 
-	// calculate dx & dy
-	dx = X1 - X0;
-	dy = Y1 - Y0;
+	cell_width = (double)WIDTH / MAP_WIDTH;
+	cell_height = (double)HEIGHT / MAP_HEIGHT;
+	map_x = (int)(pos_x / cell_width);
+	map_y = (int)(pos_y / cell_height);
 
-	// calculate steps required for generating pixels
-	if(abs(dx) > abs(dy))
-		steps = abs(dx);
+	if (dir_x == 0)
+		delta_dist_x = 1e30; //Numero gigante: nunca va a cruzar un borde vertical
 	else
-		steps = abs(dy);
+		delta_dist_x = fabs(cell_width / dir_x);
+	if (dir_y == 0)
+		delta_dist_y = 1e30;
+	else
+		delta_dist_y = fabs(cell_height / dir_y);
 
-	// calculate increment in x & y for each steps, this is the slop or the hypotenus
-	Xinc = dx / (float)steps;
-	Yinc = dy / (float)steps;
-
-	// Put pixel for each step
-	X = X0;
-	Y = Y0;
-	i = 0;
-	while(i <= steps)
+	if (dir_x < 0)
 	{
-		if(is_wall(scene, round(X), round(Y)))
-			break;
-		//pixel_put(&scene->img, round(X), round(Y), 0xFF00FF);
-		X += Xinc;
-		Y += Yinc;
-		i++;
+		step_x = -1;
+		side_dist_x = (pos_x - map_x * cell_width) / fabs(dir_x);
+	}
+	else
+	{
+		step_x = 1;
+		side_dist_x = ((map_x + 1) * cell_width - pos_x) / fabs(dir_x);
+	}
+	if (dir_y < 0)
+	{
+		step_y = -1;
+		side_dist_y = (pos_y - map_y * cell_height) / fabs(dir_y);
+	}
+	else
+	{
+		step_y = 1;
+		side_dist_y = ((map_y + 1) * cell_height - pos_y) / fabs(dir_y);
 	}
 
-	return i;
+	while (1)
+	{
+		if (side_dist_x < side_dist_y)
+		{
+			dist = side_dist_x;
+			side_dist_x += delta_dist_x;
+			map_x += step_x;
+		}
+		else
+		{
+			dist = side_dist_y;
+			side_dist_y += delta_dist_y;
+			map_y += step_y;
+		}
+		if (map_x < 0 || map_x >= MAP_WIDTH || map_y < 0 || map_y >= MAP_HEIGHT)
+			return (-1);
+		if (scene->map[map_y][map_x] == 1)
+			return (dist);
+	}
 }
 
 //El map habria que maloquearlo en el main y pasarlo como int **
@@ -96,63 +124,60 @@ void render_map(t_scene *scene)
 	}
 }
 
-//DEBERIA PINTAR CIELO ANTES DE LA LINEA Y SUELO DESPUES
 void draw_vertical_line(t_scene *scene, int height, int pos, unsigned long color)
 {
-	int x;
 	int y;
+	int center;
 
-	x = 0;
-	while(x < WIDTH)
+	y = 0;
+	center = HEIGHT / 2 - height / 2; // Marca el comienzo de la pared
+	while(y < center) //CEILING
 	{
-		if(x == pos)
-		{
-			y = HEIGHT / 2 - height / 2;
-			//while(y < height && y < HEIGHT)
-			while(y < height && y < HEIGHT)
-			{
-				pixel_put(&scene->img, x, y, color);
-				y++;
-			}
-		}
-		x++;
+		pixel_put(&scene->img, pos, y, scene->ceiling.color);
+		y++;
+	}
+	y = center;
+	while(y < center + height && y < HEIGHT) //WALL
+	{
+		pixel_put(&scene->img, pos, y, color);
+		y++;
+	}
+	while(y < HEIGHT) //FLOOR
+	{
+		pixel_put(&scene->img, pos, y, scene->floor.color);
+		y++;
 	}
 }
 
 void draw_fov(t_scene *scene)
 {
-	double scale;
+	int x;
 	double offset;
 	double angle;
-	int distance;
+	double dir_x;
+	double dir_y;
+	double distance;
 	int visual_height;
-	int x_line;
-	int inc;
 
-	scale = WIDTH / PLAYER_FOV; //FACTOR PARA QUE EL FOV SE ESCALA PARA QUE SEA EL WIDTH DE LA VENTANA
-	offset = scene->player.angle - (PLAYER_FOV/2); //LE RESTA LA MITAD DEL CONO DE VISION PARA COMPRENDER LOS VALORES CORRESPONDIENTES AL CONO, SI MIRO A LOS 90 Y LE RESTO 30 COMIENZO A MIRAR DESDE LOS 60 (HASTA LOS 120)
-	angle = scene->player.angle / (PLAYER_FOV/2); //??
-
-	inc = PLAYER_FOV;
-	while(angle <= (scene->player.angle + PLAYER_FOV))
+	x = 0;
+	while(x < WIDTH) //Itero por el eje X
 	{
-		distance = DDA(
-					scene,
-					scene->player.pos_x,
-					scene->player.pos_y,
-					scene->player.pos_x + (scene->player.dir_x * 200) + inc,
-					scene->player.pos_y + (scene->player.dir_y * 200) + inc
-					);
-
+		offset = -PLAYER_FOV/2 + ((double)x / WIDTH) * PLAYER_FOV; //Calculo el desfasaje de la columna con respecto a mi POV
+		angle = scene->player.angle + offset; //Calculo el angulo entonces
+		dir_x = cos(angle * (3.14159 / 180)); //Calculo la posicion de X trasnformando los angulos euclidianos en radianes
+		dir_y = -sin(angle * (3.14159 / 180));
+		distance = DDA(scene, scene->player.pos_x, scene->player.pos_y, dir_x, dir_y);
+		
 		if(distance <= 0)
+		{
+			x++;
 			continue ;
+		}
 
-		visual_height = (HEIGHT/distance) * 50; //MIENTRAS MAS CERCA ESTOY, visual_height SE ACERCA A HEIGHT, COMO LA DISTANCIA ES EN PIXELES HAY QUE ESCALARLA UN POCO
-		x_line = (angle - offset) * scale;
-
-		draw_vertical_line(scene, visual_height, x_line, 0xffffffff);
-		angle += 0.5;
-		inc -= 1;
+		distance = distance * cos(offset * 3.14159 / 180); //Compensa la distancia con el angulo, ya que los rayos que salen en linea recta recorreran menos camino que los que están en el borde del cono de vision y entonces generará un efecto ojo de pez
+		visual_height = ((double) HEIGHT/distance) * 50; //MIENTRAS MAS CERCA ESTOY, visual_height SE ACERCA A HEIGHT, COMO LA DISTANCIA ES EN PIXELES HAY QUE ESCALARLA UN POCO
+		draw_vertical_line(scene, visual_height, x, 0xffffffff);
+		x++;
 	}
 }
 
@@ -162,9 +187,9 @@ int main(void)
 	int map[5][5] = 
 	{
 		{1, 1, 1, 1, 1},
-		{1, 0, 1, 'N', 1},
 		{1, 0, 0, 0, 1},
-		{1, 0, 0, 1, 1},
+		{1, 0, 0, 0, 1},
+		{1, 'N', 0, 0, 1},
 		{1, 1, 1, 1, 1}
 	};
 
@@ -183,14 +208,7 @@ int main(void)
 	populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map);
 	calculate_player_position(scene);
 	scene->player.speed = 10;
-	scene->player.color = 0xffffffff;
 
-	//render_map(scene);
-	/*DDA(scene,
-	scene->player.pos_x,
-	scene->player.pos_y,
-	scene->player.pos_x + (scene->player.dir_x * 200),
-	scene->player.pos_y + (scene->player.dir_y * 200));*/
 	draw_fov(scene);
 	events_init(scene);
 
