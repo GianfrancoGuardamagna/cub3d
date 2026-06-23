@@ -36,6 +36,7 @@ int	close_handler(t_scene *scene)
 		i++;
 	}
 	free(scene->map);
+	free(scene->wall);
 	free(scene);
 	exit(0);
 }

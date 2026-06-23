@@ -188,7 +188,7 @@ int main(void)
 	{
 		{1, 1, 1, 1, 1},
 		{1, 0, 0, 0, 1},
-		{1, 0, 0, 0, 1},
+		{1, 0, 1, 0, 1},
 		{1, 'N', 0, 0, 1},
 		{1, 1, 1, 1, 1}
 	};
@@ -202,6 +202,7 @@ int main(void)
 	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
 	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
 
+	scene->wall = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_texture.xpm", 500, 500);
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
 

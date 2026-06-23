@@ -72,6 +72,7 @@ typedef struct s_scene
 	t_floor floor;
 	t_player player;
 	int **map;
+	void *wall;
 }	t_scene;
 
 //MAIN?
