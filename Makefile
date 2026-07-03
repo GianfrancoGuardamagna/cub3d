@@ -6,21 +6,21 @@
 #    By: gguardam <gguardam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/06/02 11:59:22 by gguardam         ###   ########.fr        #
+#    Updated: 2026/07/03 13:13:31 by gguardam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SOURCE = 	main.c events.c renders.c aux.c player.c
+SOURCE = main.c events.c renders.c aux.c player.c
 OBJ = $(SOURCE:.c=.o)
 INCLUDE = cub3d.h
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
-MLX_DIR = ./minilibx-linux
-MLX = $(MLX_DIR)/libmlx.a
-LIBS = -L$(MLX_DIR) -lmlx -L$(LIBFT_DIR) -lft -lXext -lX11 -lm
+MLX_DIR = ./MLX42
+MLX = $(MLX_DIR)/build/libmlx42.a
+LIBS = -L$(MLX_DIR) -lmlx -L$(LIBFT_DIR) -Iinclude -ldl -lglfw -pthread -lm
 INCLUDES = -I. -I$(LIBFT_DIR) -I$(MLX_DIR)
 RM = rm -f
 
@@ -36,7 +36,8 @@ $(LIBFT):
 	make -C $(LIBFT_DIR)
 
 $(MLX):
-	make -C $(MLX_DIR)
+	@cd $(MLX_DIR) && cmake -B build
+	@cd $(MLX_DIR) && cmake --build build -j4
 
 clean:
 	$(RM) $(OBJ)

@@ -170,7 +170,7 @@ void draw_vertical_line(t_scene *scene, int height, int pos, double wall_x)
 	center = HEIGHT / 2 - height / 2;
 	tex_x = (int)(wall_x * scene->wall.width);
 	if (tex_x >= scene->wall.width)
-		tex_x = scene->wall.width - 1;
+		tex_x = scene->wall->width - 1;
 
 	y = 0;
 	while (y < center)
@@ -188,6 +188,7 @@ void draw_vertical_line(t_scene *scene, int height, int pos, double wall_x)
 		pixel_put(&scene->img, pos, y++, scene->floor.color);
 }
 
+//double -> float REVISAR DDA
 void analize_fov(t_scene *scene)
 {
 	int		x;
@@ -215,20 +216,31 @@ void analize_fov(t_scene *scene)
 
 void loading_struct(t_scene *scene)
 {
-	scene->mlx_connection = mlx_init();
-	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
-	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
-	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
+	// Gotta error check this stuff
+	if(!(scene->mlx_connection = mlx_init(WIDTH, HEIGHT, "cub3D", true)))
+	{
+		puts(mlx_strerror(mlx_errno));
+		return(EXIT_FAILURE);
+	}
+//	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
+//	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
+//	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
 
-	scene->wall_N.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_N.xpm", &scene->wall_N.width, &scene->wall_N.height);
-	scene->wall_N.pixels_ptr = mlx_get_data_addr(scene->wall_N.img_ptr, &scene->wall_N.bpp, &scene->wall_N.line_len, &scene->wall_N.endian);
-	scene->wall_S.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_S.xpm", &scene->wall_S.width, &scene->wall_S.height);
-	scene->wall_S.pixels_ptr = mlx_get_data_addr(scene->wall_S.img_ptr, &scene->wall_S.bpp, &scene->wall_S.line_len, &scene->wall_S.endian);
-	scene->wall_E.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_E.xpm", &scene->wall_E.width, &scene->wall_E.height);
-	scene->wall_E.pixels_ptr = mlx_get_data_addr(scene->wall_E.img_ptr, &scene->wall_E.bpp, &scene->wall_E.line_len, &scene->wall_E.endian);
-	scene->wall_W.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_W.xpm", &scene->wall_W.width, &scene->wall_W.height);
-	scene->wall_W.pixels_ptr = mlx_get_data_addr(scene->wall_W.img_ptr, &scene->wall_W.bpp, &scene->wall_W.line_len, &scene->wall_W.endian);
+	scene->img = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
 
+	// scene->wall_N.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_N.xpm", &scene->wall_N.width, &scene->wall_N.height);
+	// scene->wall_N.pixels_ptr = mlx_get_data_addr(scene->wall_N.img_ptr, &scene->wall_N.bpp, &scene->wall_N.line_len, &scene->wall_N.endian);
+	// scene->wall_S.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_S.xpm", &scene->wall_S.width, &scene->wall_S.height);
+	// scene->wall_S.pixels_ptr = mlx_get_data_addr(scene->wall_S.img_ptr, &scene->wall_S.bpp, &scene->wall_S.line_len, &scene->wall_S.endian);
+	// scene->wall_E.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_E.xpm", &scene->wall_E.width, &scene->wall_E.height);
+	// scene->wall_E.pixels_ptr = mlx_get_data_addr(scene->wall_E.img_ptr, &scene->wall_E.bpp, &scene->wall_E.line_len, &scene->wall_E.endian);
+	// scene->wall_W.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_W.xpm", &scene->wall_W.width, &scene->wall_W.height);
+	// scene->wall_W.pixels_ptr = mlx_get_data_addr(scene->wall_W.img_ptr, &scene->wall_W.bpp, &scene->wall_W.line_len, &scene->wall_W.endian);
+
+	scene->texture.wall_N = mlx_load_png("./assets/wall_N.png");
+	scene->texture.wall_E = mlx_load_png("./assets/wall_E.png");
+	scene->texture.wall_S = mlx_load_png("./assets/wall_S.png");
+	scene->texture.wall_W = mlx_load_png("./assets/wall_W.png");
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
 }
@@ -236,7 +248,7 @@ void loading_struct(t_scene *scene)
 int main(void)
 {
 	t_scene *scene;
-	int map[7][7] = 
+	int map[MAP_WIDTH][MAP_HEIGHT] = 
 	{
 		{1, 1, 1, 1, 1, 1, 1},
 		{1, 0, 0, 0, 0, 0, 1},
@@ -256,6 +268,8 @@ int main(void)
 	scene->player.speed = 10;
 
 	analize_fov(scene);
+
+
 	events_init(scene);
 
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);

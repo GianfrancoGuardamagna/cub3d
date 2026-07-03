@@ -1,4 +1,4 @@
-#include "minilibx-linux/mlx.h"
+#include "MLX42/include/MLX42/MLX42.h"
 #include <math.h>
 #include <X11/X.h>
 #include <X11/keysym.h>
@@ -7,10 +7,10 @@
 #include <unistd.h> //ELIMINAR
 
 #ifndef WIDTH
-#define WIDTH 1000
+#define WIDTH 1500
 #endif
 #ifndef HEIGHT
-#define HEIGHT 500
+#define HEIGHT 750
 #endif
 //#ifndef CELL_SIZE
 //#define CELL_SIZE 10
@@ -82,21 +82,32 @@ typedef struct s_ray
 	double	delta_y;
 }	t_ray;
 
+typedef struct s_texture
+{
+	mlx_texture_t *wall_N;
+	mlx_texture_t *wall_E;
+	mlx_texture_t *wall_S;
+	mlx_texture_t *wall_W;
+}	t_texture;
+
 typedef struct s_scene
 {
 	void	*mlx_connection;
 	void	*mlx_window;
-	t_img	img;
+//	t_img	img;
+	mlx_image_t *img;
 	t_ceiling ceiling;
 	t_floor floor;
 	t_player player;
 	t_ray ray;
 	int **map;
-	t_img wall;
-	t_img wall_N;
-	t_img wall_E;
-	t_img wall_S;
-	t_img wall_W;
+//	t_img wall;
+//	t_img wall_N;
+//	t_img wall_E;
+//	t_img wall_S;
+//	t_img wall_W;
+	mlx_texture_t *wall;
+	t_texture texture;
 }	t_scene;
 
 //MAIN?

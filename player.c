@@ -1,5 +1,29 @@
 #include "cub3d.h"
 
+void vector_calculus(t_scene *scene, int i, int j)
+{
+	if(scene->map[i][j] == 'N')
+	{
+		scene->player.dir_x = 0;
+		scene->player.dir_y = -1;
+	}
+	else if(scene->map[i][j] == 'S')
+	{
+		scene->player.dir_x = 0;
+		scene->player.dir_y = 1;
+	}
+	else if(scene->map[i][j] == 'E')
+	{
+		scene->player.dir_x = 1;
+		scene->player.dir_y = 0;
+	}
+	else if(scene->map[i][j] == 'W')
+	{
+		scene->player.dir_x = -1;
+		scene->player.dir_y = 0;
+	}
+}
+
 void calculate_player_position(t_scene *scene)
 {
 	int cell_width;
@@ -15,33 +39,12 @@ void calculate_player_position(t_scene *scene)
 		j = 0;
 		while(j < MAP_WIDTH)
 		{
-			if(scene->map[i][j] == 'N')
+			if(scene->map[i][j] == 'N' || scene->map[i][j] == 'S' || scene->map[i][j] == 'W' || scene->map[i][j] == 'E')
 			{
 				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
-				scene->player.dir_x = 0;
-				scene->player.dir_y = -1;
-			}
-			else if(scene->map[i][j] == 'S')
-			{
-				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
-				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
-				scene->player.dir_x = 0;
-				scene->player.dir_y = 1;
-			}
-			else if(scene->map[i][j] == 'W')
-			{
-				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
-				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
-				scene->player.dir_x = -1;
-				scene->player.dir_y = 0;
-			}
-			else if(scene->map[i][j] == 'E')
-			{
-				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
-				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
-				scene->player.dir_x = 1;
-				scene->player.dir_y = 0;
+				vector_calculus(scene, i, j);
+				return ;
 			}
 			j++;
 		}
