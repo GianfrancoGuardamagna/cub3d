@@ -21,7 +21,6 @@ void calculate_player_position(t_scene *scene)
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 0;
 				scene->player.dir_y = -1;
-				scene->player.angle = 0;
 			}
 			else if(scene->map[i][j] == 'S')
 			{
@@ -29,7 +28,6 @@ void calculate_player_position(t_scene *scene)
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 0;
 				scene->player.dir_y = 1;
-				scene->player.angle = 270;
 			}
 			else if(scene->map[i][j] == 'W')
 			{
@@ -37,7 +35,6 @@ void calculate_player_position(t_scene *scene)
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = -1;
 				scene->player.dir_y = 0;
-				scene->player.angle = 180;
 			}
 			else if(scene->map[i][j] == 'E')
 			{
@@ -45,7 +42,6 @@ void calculate_player_position(t_scene *scene)
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				scene->player.dir_x = 1;
 				scene->player.dir_y = 0;
-				scene->player.angle = 90;
 			}
 			j++;
 		}
@@ -54,7 +50,7 @@ void calculate_player_position(t_scene *scene)
 }
 
 //Falta manejar el error de malloc
-void populate_map(t_scene *scene, int map_width, int map_height, int map[][5])
+void populate_map(t_scene *scene, int map_width, int map_height, int map[][7])
 {
 	int i;
 	int j;

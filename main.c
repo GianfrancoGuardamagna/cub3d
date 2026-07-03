@@ -14,78 +14,99 @@ int is_wall(t_scene *scene, int x, int y)
 		return 0;
 }
 
-double DDA(t_scene *scene, double pos_x, double pos_y, double dir_x, double dir_y)
+static void	init_ray(t_ray *ray, t_player *player, double fov_offset)
 {
-	int		map_x;
-	int		map_y;
-	int		step_x;
-	int		step_y;
-	double	cell_width;
-	double	cell_height;
-	double	delta_dist_x;
-	double	delta_dist_y;
-	double	side_dist_x;
-	double	side_dist_y;
+	ray->cell_w = (double)WIDTH / MAP_WIDTH;
+	ray->cell_h = (double)HEIGHT / MAP_HEIGHT;
+	ray->map_x = (int)(player->pos_x / ray->cell_w);
+	ray->map_y = (int)(player->pos_y / ray->cell_h);
+	ray->angle = atan2(-player->dir_y, player->dir_x) * (180.0 / M_PI) + fov_offset;
+	ray->dir_x = cos(ray->angle * (M_PI / 180));
+	ray->dir_y = -sin(ray->angle * (M_PI / 180));
+	if(ray->dir_x == 0)
+		ray->delta_x = 1e30;
+	else
+		ray->delta_x = fabs(ray->cell_w / ray->dir_x);
+	if(ray->dir_y == 0)
+		ray->delta_y = 1e30;
+	else
+		ray->delta_y = fabs(ray->cell_h / ray->dir_y);
+}
+
+static void	init_steps(t_ray *ray, t_player *player)
+{
+	if (ray->dir_x < 0)
+	{
+		ray->step_x = -1; //Steps in the map of cells
+		ray->dist_x = (player->pos_x - ray->map_x * ray->cell_w) / fabs(ray->dir_x); //The distance between the player pos and the nearby border
+	}
+	else
+	{
+		ray->step_x = 1;
+		ray->dist_x = ((ray->map_x + 1) * ray->cell_w - player->pos_x) / fabs(ray->dir_x);
+	}
+	if (ray->dir_y < 0)
+	{
+		ray->step_y = -1;
+		ray->dist_y = (player->pos_y - ray->map_y * ray->cell_h) / fabs(ray->dir_y);
+	}
+	else
+	{
+		ray->step_y = 1;
+		ray->dist_y = ((ray->map_y + 1) * ray->cell_h - player->pos_y) / fabs(ray->dir_y);
+	}
+}
+
+static double	march_ray(t_ray *ray, int **map)
+{
 	double	dist;
-
-	cell_width = (double)WIDTH / MAP_WIDTH;
-	cell_height = (double)HEIGHT / MAP_HEIGHT;
-	map_x = (int)(pos_x / cell_width);
-	map_y = (int)(pos_y / cell_height);
-
-	if (dir_x == 0)
-		delta_dist_x = 1e30; //Numero gigante: nunca va a cruzar un borde vertical
-	else
-		delta_dist_x = fabs(cell_width / dir_x);
-	if (dir_y == 0)
-		delta_dist_y = 1e30;
-	else
-		delta_dist_y = fabs(cell_height / dir_y);
-
-	if (dir_x < 0)
-	{
-		step_x = -1;
-		side_dist_x = (pos_x - map_x * cell_width) / fabs(dir_x);
-	}
-	else
-	{
-		step_x = 1;
-		side_dist_x = ((map_x + 1) * cell_width - pos_x) / fabs(dir_x);
-	}
-	if (dir_y < 0)
-	{
-		step_y = -1;
-		side_dist_y = (pos_y - map_y * cell_height) / fabs(dir_y);
-	}
-	else
-	{
-		step_y = 1;
-		side_dist_y = ((map_y + 1) * cell_height - pos_y) / fabs(dir_y);
-	}
 
 	while (1)
 	{
-		if (side_dist_x < side_dist_y)
+		if (ray->dist_x < ray->dist_y)
 		{
-			dist = side_dist_x;
-			side_dist_x += delta_dist_x;
-			map_x += step_x;
+			dist = ray->dist_x;
+			ray->dist_x += ray->delta_x;
+			ray->map_x += ray->step_x;
+			ray->side = 0;
 		}
 		else
 		{
-			dist = side_dist_y;
-			side_dist_y += delta_dist_y;
-			map_y += step_y;
+			dist = ray->dist_y;
+			ray->dist_y += ray->delta_y;
+			ray->map_y += ray->step_y;
+			ray->side = 1;
 		}
-		if (map_x < 0 || map_x >= MAP_WIDTH || map_y < 0 || map_y >= MAP_HEIGHT)
+		if (ray->map_x < 0 || ray->map_x >= MAP_WIDTH || ray->map_y < 0 || ray->map_y >= MAP_HEIGHT)
 			return (-1);
-		if (scene->map[map_y][map_x] == 1)
+		if (map[ray->map_y][ray->map_x] == 1)
 			return (dist);
 	}
 }
 
-//El map habria que maloquearlo en el main y pasarlo como int **
-//El map deberia estar en la estructura de scene para poder pasarlo a los eventos sin problema
+static void	calc_wall_hit(t_ray *ray, t_player *player, double dist, double *wall_x)
+{
+	if (ray->side == 0)
+		*wall_x = fmod(player->pos_y + dist * ray->dir_y, ray->cell_h) / ray->cell_h;
+	else
+		*wall_x = fmod(player->pos_x + dist * ray->dir_x, ray->cell_w) / ray->cell_w;
+	if (*wall_x < 0)
+		*wall_x += 1.0;
+}
+
+double	DDA(t_scene *scene, double fov_offset, double *wall_x)
+{
+	double	dist;
+
+	init_ray(&scene->ray, &scene->player, fov_offset);
+	init_steps(&scene->ray, &scene->player);
+	dist = march_ray(&scene->ray, scene->map);
+	if (dist < 0)
+		return (-1);
+	calc_wall_hit(&scene->ray, &scene->player, dist, wall_x);
+	return (dist);
+}
+
 void render_map(t_scene *scene)
 {
 	int y;
@@ -124,93 +145,117 @@ void render_map(t_scene *scene)
 	}
 }
 
-void draw_vertical_line(t_scene *scene, int height, int pos, unsigned long color)
+void select_wall(t_scene *scene)
 {
-	int y;
-	int center;
-
-	y = 0;
-	center = HEIGHT / 2 - height / 2; // Marca el comienzo de la pared
-	while(y < center) //CEILING
-	{
-		pixel_put(&scene->img, pos, y, scene->ceiling.color);
-		y++;
-	}
-	y = center;
-	while(y < center + height && y < HEIGHT) //WALL
-	{
-		pixel_put(&scene->img, pos, y, color);
-		y++;
-	}
-	while(y < HEIGHT) //FLOOR
-	{
-		pixel_put(&scene->img, pos, y, scene->floor.color);
-		y++;
-	}
+	if (scene->ray.side == 0 && scene->ray.step_x > 0)
+		scene->wall = scene->wall_W;
+	else if (scene->ray.side == 0 && scene->ray.step_x < 0)
+		scene->wall = scene->wall_E;
+	else if (scene->ray.side == 1 && scene->ray.step_y > 0)
+		scene->wall = scene->wall_N;
+	else
+		scene->wall = scene->wall_S;
 }
 
-void draw_fov(t_scene *scene)
+void draw_vertical_line(t_scene *scene, int height, int pos, double wall_x)
 {
-	int x;
-	double offset;
-	double angle;
-	double dir_x;
-	double dir_y;
-	double distance;
-	int visual_height;
+	int				y;
+	int				center;
+	int				tex_x;
+	int				tex_y;
+	int				offset;
+	unsigned int	color;
+
+	select_wall(scene);
+	center = HEIGHT / 2 - height / 2;
+	tex_x = (int)(wall_x * scene->wall.width);
+	if (tex_x >= scene->wall.width)
+		tex_x = scene->wall.width - 1;
+
+	y = 0;
+	while (y < center)
+		pixel_put(&scene->img, pos, y++, scene->ceiling.color);
+	while (y < center + height && y < HEIGHT)
+	{
+		tex_y = (int)((double)(y - center) / height * scene->wall.height);
+		if (tex_y >= scene->wall.height)
+			tex_y = scene->wall.height - 1;
+		offset = (tex_y * scene->wall.line_len) + (tex_x * (scene->wall.bpp / 8));
+		color = *(unsigned int *)(scene->wall.pixels_ptr + offset);
+		pixel_put(&scene->img, pos, y++, color);
+	}
+	while (y < HEIGHT)
+		pixel_put(&scene->img, pos, y++, scene->floor.color);
+}
+
+void analize_fov(t_scene *scene)
+{
+	int		x;
+	double	offset;
+	double	distance;
+	double	wall_x;
+	int		visual_height;
 
 	x = 0;
-	while(x < WIDTH) //Itero por el eje X
+	while (x < WIDTH)
 	{
-		offset = -PLAYER_FOV/2 + ((double)x / WIDTH) * PLAYER_FOV; //Calculo el desfasaje de la columna con respecto a mi POV
-		angle = scene->player.angle + offset; //Calculo el angulo entonces
-		dir_x = cos(angle * (3.14159 / 180)); //Calculo la posicion de X trasnformando los angulos euclidianos en radianes
-		dir_y = -sin(angle * (3.14159 / 180));
-		distance = DDA(scene, scene->player.pos_x, scene->player.pos_y, dir_x, dir_y);
-		
-		if(distance <= 0)
+		offset = PLAYER_FOV / 2 - ((double)x / WIDTH) * PLAYER_FOV;
+		distance = DDA(scene, offset, &wall_x);
+		if (distance <= 0)
 		{
 			x++;
 			continue ;
 		}
-
-		distance = distance * cos(offset * 3.14159 / 180); //Compensa la distancia con el angulo, ya que los rayos que salen en linea recta recorreran menos camino que los que están en el borde del cono de vision y entonces generará un efecto ojo de pez
-		visual_height = ((double) HEIGHT/distance) * 50; //MIENTRAS MAS CERCA ESTOY, visual_height SE ACERCA A HEIGHT, COMO LA DISTANCIA ES EN PIXELES HAY QUE ESCALARLA UN POCO
-		draw_vertical_line(scene, visual_height, x, 0xffffffff);
+		distance = distance * cos(offset * M_PI / 180);
+		visual_height = (double)HEIGHT / distance * (WIDTH / MAP_WIDTH);
+		draw_vertical_line(scene, visual_height, x, wall_x);
 		x++;
 	}
+}
+
+void loading_struct(t_scene *scene)
+{
+	scene->mlx_connection = mlx_init();
+	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
+	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
+	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
+
+	scene->wall_N.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_N.xpm", &scene->wall_N.width, &scene->wall_N.height);
+	scene->wall_N.pixels_ptr = mlx_get_data_addr(scene->wall_N.img_ptr, &scene->wall_N.bpp, &scene->wall_N.line_len, &scene->wall_N.endian);
+	scene->wall_S.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_S.xpm", &scene->wall_S.width, &scene->wall_S.height);
+	scene->wall_S.pixels_ptr = mlx_get_data_addr(scene->wall_S.img_ptr, &scene->wall_S.bpp, &scene->wall_S.line_len, &scene->wall_S.endian);
+	scene->wall_E.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_E.xpm", &scene->wall_E.width, &scene->wall_E.height);
+	scene->wall_E.pixels_ptr = mlx_get_data_addr(scene->wall_E.img_ptr, &scene->wall_E.bpp, &scene->wall_E.line_len, &scene->wall_E.endian);
+	scene->wall_W.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_W.xpm", &scene->wall_W.width, &scene->wall_W.height);
+	scene->wall_W.pixels_ptr = mlx_get_data_addr(scene->wall_W.img_ptr, &scene->wall_W.bpp, &scene->wall_W.line_len, &scene->wall_W.endian);
+
+	scene->floor.color = createRGB(220, 110, 0);
+	scene->ceiling.color = createRGB(225, 30, 0);
 }
 
 int main(void)
 {
 	t_scene *scene;
-	int map[5][5] = 
+	int map[7][7] = 
 	{
-		{1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 1},
-		{1, 0, 1, 0, 1},
-		{1, 'N', 0, 0, 1},
-		{1, 1, 1, 1, 1}
+		{1, 1, 1, 1, 1, 1, 1},
+		{1, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 1, 0, 0, 1},
+		{1, 'N', 0, 0, 0, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1},
 	};
 
 	scene = malloc(sizeof(t_scene));
 	if (!scene)
 		return 1;
 
-	scene->mlx_connection = mlx_init();
-	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
-	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
-	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
-
-	scene->wall = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_texture.xpm", 500, 500);
-	scene->floor.color = createRGB(220, 110, 0);
-	scene->ceiling.color = createRGB(225, 30, 0);
+	loading_struct(scene);
 
 	populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map);
 	calculate_player_position(scene);
 	scene->player.speed = 10;
 
-	draw_fov(scene);
+	analize_fov(scene);
 	events_init(scene);
 
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);

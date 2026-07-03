@@ -26,6 +26,7 @@ int	close_handler(t_scene *scene)
 
 	mlx_destroy_image(scene->mlx_connection, scene->img.img_ptr);
 	mlx_destroy_window(scene->mlx_connection, scene->mlx_window);
+	mlx_destroy_image(scene->mlx_connection, scene->wall.img_ptr);
 	mlx_destroy_display(scene->mlx_connection);
 	free(scene->mlx_connection);
 
@@ -36,7 +37,6 @@ int	close_handler(t_scene *scene)
 		i++;
 	}
 	free(scene->map);
-	free(scene->wall);
 	free(scene);
 	exit(0);
 }
@@ -45,9 +45,15 @@ int key_handler(int keysym, t_scene *scene)
 {
 	double	move_x;
 	double	move_y;
+	double	right_x;
+	double	right_y;
+	double	old_dir_x;
 
 	move_x = scene->player.dir_x * scene->player.speed;
 	move_y = scene->player.dir_y * scene->player.speed;
+
+	right_x = -scene->player.dir_y * scene->player.speed;
+	right_y = scene->player.dir_x * scene->player.speed;
 
 	if (keysym == XK_Escape)
 		close_handler(scene);
@@ -60,29 +66,40 @@ int key_handler(int keysym, t_scene *scene)
 	}
 	else if (keysym == XK_s)
 	{
-		if(is_wall(scene, scene->player.pos_x - move_x, scene->player.pos_y - move_y))
+		if(is_wall(scene, scene->player.pos_x + right_x, scene->player.pos_y + right_y))
 			return (0);
 		scene->player.pos_x -= move_x;
 		scene->player.pos_y -= move_y;
 	}
+	else if (keysym == XK_a)
+	{
+		if(is_wall(scene, scene->player.pos_x - right_x, scene->player.pos_y - right_y))
+			return (0);
+		scene->player.pos_x -= right_x;
+		scene->player.pos_y -= right_y;
+	}
+	else if (keysym == XK_d)
+	{
+		if(is_wall(scene, scene->player.pos_x - move_x, scene->player.pos_y - move_y))
+			return (0);
+		scene->player.pos_x += right_x;
+		scene->player.pos_y += right_y;
+	}
 	else if (keysym == XK_Left)
 	{
-		scene->player.angle -= 1;
-		scene->player.dir_x = cos(scene->player.angle * (3.14159 / 180));
-		scene->player.dir_y = -sin(scene->player.angle * (3.14159 / 180));
-		if(scene->player.angle < 0)
-			scene->player.angle += 360;
+		//Its the transformation the vector (0, -1) into an angle (45°)
+		old_dir_x = scene->player.dir_x;
+		scene->player.dir_x = old_dir_x * cos(-3 * M_PI / 180) - scene->player.dir_y * sin(-3 * M_PI / 180);
+		scene->player.dir_y = old_dir_x * sin(-3 * M_PI / 180) + scene->player.dir_y * cos(-3 * M_PI / 180);
 	}
 	else if (keysym == XK_Right)
 	{
-		scene->player.angle += 1;
-		scene->player.dir_x = cos(scene->player.angle * (3.14159 / 180));
-		scene->player.dir_y = -sin(scene->player.angle * (3.14159 / 180));
-		if(scene->player.angle > 360)
-			scene->player.angle -= 360;
+		old_dir_x = scene->player.dir_x;
+		scene->player.dir_x = old_dir_x * cos(3 * M_PI / 180) - scene->player.dir_y * sin(3 * M_PI / 180);
+		scene->player.dir_y = old_dir_x * sin(3 * M_PI / 180) + scene->player.dir_y * cos(3 * M_PI / 180);
 	}
 
-	draw_fov(scene);
+	analize_fov(scene);
 	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
 	return (0);
 }

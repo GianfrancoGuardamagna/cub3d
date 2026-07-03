@@ -12,14 +12,14 @@
 #ifndef HEIGHT
 #define HEIGHT 500
 #endif
-#ifndef CELL_SIZE
-#define CELL_SIZE 10
-#endif
+//#ifndef CELL_SIZE
+//#define CELL_SIZE 10
+//#endif
 #ifndef MAP_WIDTH
-#define MAP_WIDTH 5
+#define MAP_WIDTH 7
 #endif
 #ifndef MAP_HEIGHT
-#define MAP_HEIGHT 5
+#define MAP_HEIGHT 7
 #endif
 #ifndef PLAYER_FOV
 #define PLAYER_FOV 60
@@ -34,7 +34,6 @@ typedef struct s_player
 	double	pos_y;
 	double	dir_x;
 	double	dir_y;
-	double	angle;
 	double	speed;
 }	t_player;
 
@@ -61,7 +60,27 @@ typedef struct s_img
 	int		bpp;
 	int		endian;
 	int		line_len;
+	int		width;
+	int		height;
 }	t_img;
+
+typedef struct s_ray
+{
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	int		side;
+	double	cell_w;
+	double	cell_h;
+	double	angle;
+	double	dir_x;
+	double	dir_y;
+	double	dist_x;
+	double	dist_y;
+	double	delta_x;
+	double	delta_y;
+}	t_ray;
 
 typedef struct s_scene
 {
@@ -71,14 +90,19 @@ typedef struct s_scene
 	t_ceiling ceiling;
 	t_floor floor;
 	t_player player;
+	t_ray ray;
 	int **map;
-	void *wall;
+	t_img wall;
+	t_img wall_N;
+	t_img wall_E;
+	t_img wall_S;
+	t_img wall_W;
 }	t_scene;
 
 //MAIN?
 void	render_map(t_scene *scene);
-double	DDA(t_scene *scene, double pos_x, double pos_y, double dir_x, double dir_y);
-void	draw_fov(t_scene *scene);
+double	DDA(t_scene *scene, double fov_offset, double *wall_x);
+void	analize_fov(t_scene *scene);
 int		is_wall(t_scene *scene, int x, int y);
 
 //EVENTS
@@ -101,4 +125,4 @@ double calcular_angulo_grados(double x0, double y0, double x1, double y1);
 
 //PLAYER
 void calculate_player_position(t_scene *scene);
-void populate_map(t_scene *scene, int map_width, int map_height, int map[][5]);
+void populate_map(t_scene *scene, int map_width, int map_height, int map[][7]);
