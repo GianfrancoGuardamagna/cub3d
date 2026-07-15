@@ -7,10 +7,10 @@
 #include <unistd.h> //ELIMINAR
 
 #ifndef WIDTH
-#define WIDTH 1500
+#define WIDTH 900
 #endif
 #ifndef HEIGHT
-#define HEIGHT 750
+#define HEIGHT 600
 #endif
 //#ifndef CELL_SIZE
 //#define CELL_SIZE 10
@@ -24,17 +24,20 @@
 #ifndef PLAYER_FOV
 #define PLAYER_FOV 60
 #endif
+#ifndef PLAYER_RADIUS
+#define PLAYER_RADIUS 15
+#endif
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#define M_PI 3.1415
 #endif
 
 typedef struct s_player
 {
-	double	pos_x;
-	double	pos_y;
-	double	dir_x;
-	double	dir_y;
-	double	speed;
+	float	pos_x;
+	float	pos_y;
+	float	dir_x;
+	float	dir_y;
+	int		speed;
 }	t_player;
 
 typedef struct s_floor
@@ -71,15 +74,16 @@ typedef struct s_ray
 	int		step_x;
 	int		step_y;
 	int		side;
-	double	cell_w;
-	double	cell_h;
-	double	angle;
-	double	dir_x;
-	double	dir_y;
-	double	dist_x;
-	double	dist_y;
-	double	delta_x;
-	double	delta_y;
+	int		cell_w;
+	int		cell_h;
+	float	angle;
+	float	dir_x;
+	float	dir_y;
+	float	dist_x;
+	float	dist_y;
+	float	delta_x;
+	float	delta_y;
+	float	wall_x;
 }	t_ray;
 
 typedef struct s_texture
@@ -93,7 +97,7 @@ typedef struct s_texture
 typedef struct s_scene
 {
 	void	*mlx_connection;
-	void	*mlx_window;
+//	void	*mlx_window;
 //	t_img	img;
 	mlx_image_t *img;
 	t_ceiling ceiling;
@@ -106,21 +110,21 @@ typedef struct s_scene
 //	t_img wall_E;
 //	t_img wall_S;
 //	t_img wall_W;
-	mlx_texture_t *wall;
+//	mlx_texture_t *wall;
 	t_texture texture;
 }	t_scene;
 
-//MAIN?
+//MAIN
 void	render_map(t_scene *scene);
-double	DDA(t_scene *scene, double fov_offset, double *wall_x);
+float	DDA(t_scene *scene, float fov_offset);
 void	analize_fov(t_scene *scene);
+int		check_walls_around(t_scene *scene, int x, int y);
 int		is_wall(t_scene *scene, int x, int y);
 
 //EVENTS
-void	scene_cleanup(t_scene *scene);
 void	events_init(t_scene *scene);
-int		close_handler(t_scene *scene);
-int		key_handler(int keysym, t_scene *scene);
+void	close_handler(void* param);
+void	key_handler(mlx_key_data_t keydata, void* param);
 
 //RENDERS
 void render_floor(t_scene *scene);
@@ -130,10 +134,9 @@ void render_ray(t_scene *scene);
 
 //AUX
 int abs(int n); //NO ESTÁ EN MATH.H?
-void	pixel_put(t_img *img, int x, int y, int color);
 unsigned long createRGB(int r, int g, int b);
 double calcular_angulo_grados(double x0, double y0, double x1, double y1);
 
 //PLAYER
-void calculate_player_position(t_scene *scene);
-void populate_map(t_scene *scene, int map_width, int map_height, int map[][7]);
+void initialize_player(t_scene *scene);
+int populate_map(t_scene *scene, int map_width, int map_height, int map[][7]);

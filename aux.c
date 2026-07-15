@@ -7,17 +7,6 @@ unsigned long createRGB(int r, int g, int b)
 	return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-void	pixel_put(t_img *img, int x, int y, int color)
-{
-	int	offset;
-
-	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
-		return;
-
-	offset = (y * img->line_len) + (x * (img->bpp / 8));
-	*(unsigned int *)(img->pixels_ptr + offset) = color;
-}
-
 int abs(int n)
 {
 	if(n > 0)

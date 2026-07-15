@@ -1,5 +1,18 @@
 #include "cub3d.h"
 
+uint32_t	get_pixel(mlx_texture_t *texture)
+{
+	int	i;
+
+	i = (texture->y * texture->width + texture->x) * 4;
+	return (
+		(texture->pixels[i] << 24)
+		| (texture->pixels[i + 1] << 16)
+		| (texture->pixels[i + 2] << 8)
+		| texture->pixels[i + 3]
+	);
+}
+
 int is_wall(t_scene *scene, int x, int y)
 {
 	int cell_width;
@@ -14,23 +27,36 @@ int is_wall(t_scene *scene, int x, int y)
 		return 0;
 }
 
-static void	init_ray(t_ray *ray, t_player *player, double fov_offset)
+int check_walls_around(t_scene *scene, int x, int y)
 {
-	ray->cell_w = (double)WIDTH / MAP_WIDTH;
-	ray->cell_h = (double)HEIGHT / MAP_HEIGHT;
+	if (is_wall(scene, x + PLAYER_RADIUS, y + PLAYER_RADIUS))
+		return (1);
+	if (is_wall(scene, x - PLAYER_RADIUS, y - PLAYER_RADIUS))
+		return (1);
+	if (is_wall(scene, x + PLAYER_RADIUS, y - PLAYER_RADIUS))
+		return (1);
+	if (is_wall(scene, x - PLAYER_RADIUS, y + PLAYER_RADIUS))
+		return (1);
+	return (0);
+}
+
+static void	init_ray(t_ray *ray, t_player *player, float fov_offset)
+{
+	ray->cell_w = WIDTH / MAP_WIDTH;
+	ray->cell_h = HEIGHT / MAP_HEIGHT;
 	ray->map_x = (int)(player->pos_x / ray->cell_w);
 	ray->map_y = (int)(player->pos_y / ray->cell_h);
-	ray->angle = atan2(-player->dir_y, player->dir_x) * (180.0 / M_PI) + fov_offset;
+	ray->angle = atan2f(-player->dir_y, player->dir_x) * (180.0 / M_PI) + fov_offset;
 	ray->dir_x = cos(ray->angle * (M_PI / 180));
 	ray->dir_y = -sin(ray->angle * (M_PI / 180));
 	if(ray->dir_x == 0)
-		ray->delta_x = 1e30;
+		ray->delta_x = 1e30f;
 	else
-		ray->delta_x = fabs(ray->cell_w / ray->dir_x);
+		ray->delta_x = (float)fabs(ray->cell_w / ray->dir_x);
 	if(ray->dir_y == 0)
-		ray->delta_y = 1e30;
+		ray->delta_y = 1e30f;
 	else
-		ray->delta_y = fabs(ray->cell_h / ray->dir_y);
+		ray->delta_y = (float)fabs(ray->cell_h / ray->dir_y);
 }
 
 static void	init_steps(t_ray *ray, t_player *player)
@@ -38,28 +64,28 @@ static void	init_steps(t_ray *ray, t_player *player)
 	if (ray->dir_x < 0)
 	{
 		ray->step_x = -1; //Steps in the map of cells
-		ray->dist_x = (player->pos_x - ray->map_x * ray->cell_w) / fabs(ray->dir_x); //The distance between the player pos and the nearby border
+		ray->dist_x = (player->pos_x - ray->map_x * ray->cell_w) / (float)fabs(ray->dir_x); //The distance between the player pos and the nearby border
 	}
 	else
 	{
 		ray->step_x = 1;
-		ray->dist_x = ((ray->map_x + 1) * ray->cell_w - player->pos_x) / fabs(ray->dir_x);
+		ray->dist_x = ((ray->map_x + 1) * ray->cell_w - player->pos_x) / (float)fabs(ray->dir_x);
 	}
 	if (ray->dir_y < 0)
 	{
 		ray->step_y = -1;
-		ray->dist_y = (player->pos_y - ray->map_y * ray->cell_h) / fabs(ray->dir_y);
+		ray->dist_y = (player->pos_y - ray->map_y * ray->cell_h) / (float)fabs(ray->dir_y);
 	}
 	else
 	{
 		ray->step_y = 1;
-		ray->dist_y = ((ray->map_y + 1) * ray->cell_h - player->pos_y) / fabs(ray->dir_y);
+		ray->dist_y = ((ray->map_y + 1) * ray->cell_h - player->pos_y) / (float)fabs(ray->dir_y);
 	}
 }
 
-static double	march_ray(t_ray *ray, int **map)
+static float	march_ray(t_ray *ray, int **map)
 {
-	double	dist;
+	float	dist;
 
 	while (1)
 	{
@@ -84,30 +110,30 @@ static double	march_ray(t_ray *ray, int **map)
 	}
 }
 
-static void	calc_wall_hit(t_ray *ray, t_player *player, double dist, double *wall_x)
+static void	calc_wall_hit(t_ray *ray, t_player *player, float dist)
 {
 	if (ray->side == 0)
-		*wall_x = fmod(player->pos_y + dist * ray->dir_y, ray->cell_h) / ray->cell_h;
+		ray->wall_x = (float)fmod(player->pos_y + dist * ray->dir_y, ray->cell_h) / ray->cell_h;
 	else
-		*wall_x = fmod(player->pos_x + dist * ray->dir_x, ray->cell_w) / ray->cell_w;
-	if (*wall_x < 0)
-		*wall_x += 1.0;
+		ray->wall_x = (float)fmod(player->pos_x + dist * ray->dir_x, ray->cell_w) / ray->cell_w;
+	if (ray->wall_x < 0)
+		ray->wall_x += 1.0f;
 }
 
-double	DDA(t_scene *scene, double fov_offset, double *wall_x)
+float	DDA(t_scene *scene, float fov_offset)
 {
-	double	dist;
+	float	dist;
 
 	init_ray(&scene->ray, &scene->player, fov_offset);
 	init_steps(&scene->ray, &scene->player);
 	dist = march_ray(&scene->ray, scene->map);
 	if (dist < 0)
 		return (-1);
-	calc_wall_hit(&scene->ray, &scene->player, dist, wall_x);
+	calc_wall_hit(&scene->ray, &scene->player, dist);
 	return (dist);
 }
 
-void render_map(t_scene *scene)
+/*void render_map(t_scene *scene)
 {
 	int y;
 	int x;
@@ -143,91 +169,92 @@ void render_map(t_scene *scene)
 		}
 		y++;
 	}
-}
+}*/
 
-void select_wall(t_scene *scene)
+void select_texture(t_scene *scene, mlx_texture_t *texture)
 {
 	if (scene->ray.side == 0 && scene->ray.step_x > 0)
-		scene->wall = scene->wall_W;
+		*texture = *scene->texture.wall_W;
 	else if (scene->ray.side == 0 && scene->ray.step_x < 0)
-		scene->wall = scene->wall_E;
+		*texture = *scene->texture.wall_E;
 	else if (scene->ray.side == 1 && scene->ray.step_y > 0)
-		scene->wall = scene->wall_N;
+		*texture = *scene->texture.wall_N;
 	else
-		scene->wall = scene->wall_S;
+		*texture = *scene->texture.wall_S;
 }
 
-void draw_vertical_line(t_scene *scene, int height, int pos, double wall_x)
+void draw_vertical_line(t_scene *scene, int wall_height, int pos)
 {
 	int				y;
 	int				center;
-	int				tex_x;
-	int				tex_y;
-	int				offset;
-	unsigned int	color;
+	mlx_texture_t	*texture;
+//	int				offset;
+//	unsigned int	color;
 
-	select_wall(scene);
-	center = HEIGHT / 2 - height / 2;
-	tex_x = (int)(wall_x * scene->wall.width);
-	if (tex_x >= scene->wall.width)
-		tex_x = scene->wall->width - 1;
+	//Falta gestionar si falla memoria
+	texture = malloc(sizeof(mlx_texture_t));
+	if(!texture)
+		return ;
+
+	select_texture(scene, texture);
+	center = HEIGHT / 2 - wall_height / 2;
+
+	//I modified the "mlx_texture_t" data type so it contains now {int x; int y}
+	//En que situaciones se da este error?
+	texture->x = (int)(scene->ray.wall_x * texture->width);
+	if ((unsigned int)texture->x >= texture->width)
+		texture->x = texture->width - 1;
 
 	y = 0;
 	while (y < center)
-		pixel_put(&scene->img, pos, y++, scene->ceiling.color);
-	while (y < center + height && y < HEIGHT)
+		mlx_put_pixel(scene->img, pos, y++, scene->ceiling.color);
+	while (y < center + wall_height && y < HEIGHT)
 	{
-		tex_y = (int)((double)(y - center) / height * scene->wall.height);
-		if (tex_y >= scene->wall.height)
-			tex_y = scene->wall.height - 1;
-		offset = (tex_y * scene->wall.line_len) + (tex_x * (scene->wall.bpp / 8));
-		color = *(unsigned int *)(scene->wall.pixels_ptr + offset);
-		pixel_put(&scene->img, pos, y++, color);
+		texture->y = (int)(((float)(y - center) / wall_height) * texture->height);
+		if ((unsigned int)texture->y >= texture->height)
+			texture->y = texture->height - 1;
+//		offset = (texture->y * texture->width) + (texture->x * (texture->bytes_per_pixel / 8));
+//		color = *(unsigned int *)(scene->wall.pixels_ptr + offset);
+		mlx_put_pixel(scene->img, pos, y++, get_pixel(texture));
 	}
 	while (y < HEIGHT)
-		pixel_put(&scene->img, pos, y++, scene->floor.color);
+		mlx_put_pixel(scene->img, pos, y++, scene->floor.color);
+	free(texture);
 }
 
-//double -> float REVISAR DDA
 void analize_fov(t_scene *scene)
 {
 	int		x;
-	double	offset;
-	double	distance;
-	double	wall_x;
+	float	offset;
+	float	distance;
 	int		visual_height;
 
 	x = 0;
 	while (x < WIDTH)
 	{
-		offset = PLAYER_FOV / 2 - ((double)x / WIDTH) * PLAYER_FOV;
-		distance = DDA(scene, offset, &wall_x);
-		if (distance <= 0)
+		offset = PLAYER_FOV / 2 - ((float)x / WIDTH) * PLAYER_FOV;
+		if((distance = DDA(scene, offset)) <= 0)
 		{
 			x++;
 			continue ;
 		}
-		distance = distance * cos(offset * M_PI / 180);
-		visual_height = (double)HEIGHT / distance * (WIDTH / MAP_WIDTH);
-		draw_vertical_line(scene, visual_height, x, wall_x);
+		distance = distance * cos(offset * M_PI / 180); //Modify value for avoiding fisheye
+		visual_height = HEIGHT / distance * (WIDTH / MAP_WIDTH);
+		draw_vertical_line(scene, visual_height, x);
 		x++;
 	}
 }
 
-void loading_struct(t_scene *scene)
+int loading_struct(t_scene *scene)
 {
-	// Gotta error check this stuff
 	if(!(scene->mlx_connection = mlx_init(WIDTH, HEIGHT, "cub3D", true)))
-	{
-		puts(mlx_strerror(mlx_errno));
-		return(EXIT_FAILURE);
-	}
+		return 1;
 //	scene->mlx_window = mlx_new_window(scene->mlx_connection, WIDTH, HEIGHT, "cub3d");
 //	scene->img.img_ptr = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
 //	scene->img.pixels_ptr = mlx_get_data_addr(scene->img.img_ptr, &scene->img.bpp, &scene->img.line_len, &scene->img.endian);
 
-	scene->img = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT);
-
+	if(!(scene->img = mlx_new_image(scene->mlx_connection, WIDTH, HEIGHT)))
+		return 1;
 	// scene->wall_N.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_N.xpm", &scene->wall_N.width, &scene->wall_N.height);
 	// scene->wall_N.pixels_ptr = mlx_get_data_addr(scene->wall_N.img_ptr, &scene->wall_N.bpp, &scene->wall_N.line_len, &scene->wall_N.endian);
 	// scene->wall_S.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_S.xpm", &scene->wall_S.width, &scene->wall_S.height);
@@ -237,12 +264,17 @@ void loading_struct(t_scene *scene)
 	// scene->wall_W.img_ptr = mlx_xpm_file_to_image(scene->mlx_connection, "./assets/wall_W.xpm", &scene->wall_W.width, &scene->wall_W.height);
 	// scene->wall_W.pixels_ptr = mlx_get_data_addr(scene->wall_W.img_ptr, &scene->wall_W.bpp, &scene->wall_W.line_len, &scene->wall_W.endian);
 
-	scene->texture.wall_N = mlx_load_png("./assets/wall_N.png");
-	scene->texture.wall_E = mlx_load_png("./assets/wall_E.png");
-	scene->texture.wall_S = mlx_load_png("./assets/wall_S.png");
-	scene->texture.wall_W = mlx_load_png("./assets/wall_W.png");
+	if(!(scene->texture.wall_N = mlx_load_png("./assets/wall_N.png")))
+		return 1;
+	if(!(scene->texture.wall_E = mlx_load_png("./assets/wall_E.png")))
+		return 1;
+	if(!(scene->texture.wall_S = mlx_load_png("./assets/wall_S.png")))
+		return 1;
+	if(!(scene->texture.wall_W = mlx_load_png("./assets/wall_W.png")))
+		return 1;
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
+	return 0;
 }
 
 int main(void)
@@ -261,19 +293,27 @@ int main(void)
 	if (!scene)
 		return 1;
 
-	loading_struct(scene);
+	//Falta mensajes de errores (mlx_errno)
+	if(loading_struct(scene) != 0)
+	{
+		close_handler(scene);
+		return 1;
+	}
 
-	populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map);
-	calculate_player_position(scene);
-	scene->player.speed = 10;
+	//Falta mensajes de errores
+	if(populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map) != 0)
+	{
+		close_handler(scene);
+		return 1;
+	}
 
-	analize_fov(scene);
-
-
+	initialize_player(scene);
 	events_init(scene);
-
-	mlx_put_image_to_window(scene->mlx_connection, scene->mlx_window, scene->img.img_ptr, 0, 0);
+	analize_fov(scene);
+	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 	mlx_loop(scene->mlx_connection);
-	scene_cleanup(scene);
+	close_handler(scene);
 	return 0;
 }
+
+//Double x Float, cambié libreria gráfica, comencé a controlar eficiencia y chequeo de errores, corregí texturas gráficas y bug de la wall collison agregando un player radius que colisiona antes que la camara

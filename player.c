@@ -24,7 +24,7 @@ void vector_calculus(t_scene *scene, int i, int j)
 	}
 }
 
-void calculate_player_position(t_scene *scene)
+void initialize_player(t_scene *scene)
 {
 	int cell_width;
 	int cell_height;
@@ -44,6 +44,7 @@ void calculate_player_position(t_scene *scene)
 				scene->player.pos_x = (cell_width * (j + 1)) - (cell_width / 2);
 				scene->player.pos_y = (cell_height * (i + 1)) - (cell_height / 2);
 				vector_calculus(scene, i, j);
+				scene->player.speed = 10;
 				return ;
 			}
 			j++;
@@ -52,21 +53,22 @@ void calculate_player_position(t_scene *scene)
 	}
 }
 
-//Falta manejar el error de malloc
-void populate_map(t_scene *scene, int map_width, int map_height, int map[][7])
+int populate_map(t_scene *scene, int map_width, int map_height, int map[][7])
 {
 	int i;
 	int j;
 
 	scene->map = malloc(sizeof(int *) * map_height);
 	if(!scene->map)
-		return ;
+		return 1;
 
 	i = 0;
 	while(i < map_height)
 	{
 		j = 0;
 		scene->map[i] = malloc(sizeof(int) * map_width);
+		if(!scene->map[i])
+			return 1;
 		while(j < map_width)
 		{
 			scene->map[i][j] = map[i][j];
@@ -74,4 +76,5 @@ void populate_map(t_scene *scene, int map_width, int map_height, int map[][7])
 		}
 		i++;
 	}
+	return 0;
 }
