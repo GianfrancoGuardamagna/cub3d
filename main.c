@@ -315,5 +315,3 @@ int main(void)
 	close_handler(scene);
 	return 0;
 }
-
-//Double x Float, cambié libreria gráfica, comencé a controlar eficiencia y chequeo de errores, corregí texturas gráficas y bug de la wall collison agregando un player radius que colisiona antes que la camara

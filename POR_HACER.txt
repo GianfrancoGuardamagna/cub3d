@@ -1,0 +1,10 @@
+-> Texturas que concuerden
+-> Corregir leaks de memoria, chequear que pueden ser de la MLX42 y como silenciarlos
+-> Parseo
+-> Limpiar codigo muerto
+-> Formatear el codigo según norma y jerarquizar bien los archivos
+-> Minimapa
+-> Puertas
+-> Sprites animados
+-> Controlas angulo de vision con el ratón
+-> HUD? Oscuridad y Linternas? Musica para cuando entrás, menú de selección de mapa y musica de juego?
