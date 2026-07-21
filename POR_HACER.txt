@@ -1,10 +1,12 @@
--> Texturas que concuerden
+-> Texturas que concuerden HECHO
 -> Corregir leaks de memoria, chequear que pueden ser de la MLX42 y como silenciarlos
 -> Parseo
--> Limpiar codigo muerto
--> Formatear el codigo según norma y jerarquizar bien los archivos
+-> Limpiar codigo muerto EMPEZADO
+-> Formatear el codigo según norma y jerarquizar bien los archivos EMPEZADO (dda.c tiene 6 funciones dentro)
 -> Minimapa
 -> Puertas
 -> Sprites animados
 -> Controlas angulo de vision con el ratón
+-> Readme
+-> Chequear que cierre con la cruz de la ventana
 -> HUD? Oscuridad y Linternas? Musica para cuando entrás, menú de selección de mapa y musica de juego?

@@ -3,8 +3,8 @@
 #include <X11/X.h>
 #include <X11/keysym.h>
 #include <stdlib.h>
-#include <stdio.h> //ELIMINAR
-#include <unistd.h> //ELIMINAR
+#include <stdio.h>
+#include <unistd.h>
 
 #ifndef WIDTH
 #define WIDTH 900
@@ -12,9 +12,6 @@
 #ifndef HEIGHT
 #define HEIGHT 600
 #endif
-//#ifndef CELL_SIZE
-//#define CELL_SIZE 10
-//#endif
 #ifndef MAP_WIDTH
 #define MAP_WIDTH 7
 #endif
@@ -97,46 +94,52 @@ typedef struct s_texture
 typedef struct s_scene
 {
 	void	*mlx_connection;
-//	void	*mlx_window;
-//	t_img	img;
 	mlx_image_t *img;
 	t_ceiling ceiling;
 	t_floor floor;
 	t_player player;
 	t_ray ray;
 	int **map;
-//	t_img wall;
-//	t_img wall_N;
-//	t_img wall_E;
-//	t_img wall_S;
-//	t_img wall_W;
-//	mlx_texture_t *wall;
 	t_texture texture;
 }	t_scene;
 
-//MAIN
-void	render_map(t_scene *scene);
-float	DDA(t_scene *scene, float fov_offset);
+// Main
 void	analize_fov(t_scene *scene);
-int		check_walls_around(t_scene *scene, int x, int y);
-int		is_wall(t_scene *scene, int x, int y);
 
-//EVENTS
-void	events_init(t_scene *scene);
-void	close_handler(void* param);
-void	key_handler(mlx_key_data_t keydata, void* param);
-
-//RENDERS
+// Renders
 void render_floor(t_scene *scene);
 void render_ceiling(t_scene *scene);
 void render_player(t_scene *scene);
 void render_ray(t_scene *scene);
 
-//AUX
+// Aux
 int abs(int n); //NO ESTÁ EN MATH.H?
 unsigned long createRGB(int r, int g, int b);
 double calcular_angulo_grados(double x0, double y0, double x1, double y1);
 
-//PLAYER
-void initialize_player(t_scene *scene);
-int populate_map(t_scene *scene, int map_width, int map_height, int map[][7]);
+// ./DDA
+// dda.c
+float	dda(t_scene *scene, float fov_offset);
+
+// ./utils
+// error.c
+void	error_call(t_scene *scene, int status, char *msg);
+
+// init_scene.c
+t_scene	*init_scene(t_scene *scene);
+
+// init_player.c
+void	init_player(t_scene *scene);
+
+// init_events.c
+void	init_events(t_scene *scene);
+void	close_handler(void* param);
+
+// moves.c
+void	moving_north(t_scene *scene, float move_x, float move_y);
+void	moving_south(t_scene *scene, float move_x, float move_y);
+void	moving_east(t_scene *scene, float right_x, float right_y);
+void	moving_west(t_scene *scene, float right_x, float right_y);
+
+// collision.c
+int		check_walls_around(t_scene *scene, int x, int y);
