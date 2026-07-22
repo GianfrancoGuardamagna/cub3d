@@ -104,42 +104,36 @@ typedef struct s_scene
 }	t_scene;
 
 // Main
-void	analize_fov(t_scene *scene);
-
-// Renders
-void render_floor(t_scene *scene);
-void render_ceiling(t_scene *scene);
-void render_player(t_scene *scene);
-void render_ray(t_scene *scene);
-
-// Aux
-int abs(int n); //NO ESTÁ EN MATH.H?
-unsigned long createRGB(int r, int g, int b);
-double calcular_angulo_grados(double x0, double y0, double x1, double y1);
+void		analize_fov(t_scene *scene);
+void		paint_mapcell(t_scene *scene, int row, int col);
 
 // ./DDA
 // dda.c
-float	dda(t_scene *scene, float fov_offset);
+float		dda(t_scene *scene, float fov_offset);
 
 // ./utils
 // error.c
-void	error_call(t_scene *scene, int status, char *msg);
+void		error_call(t_scene *scene, int status, char *msg);
 
 // init_scene.c
-t_scene	*init_scene(t_scene *scene);
+void		init_scene(t_scene *scene);
 
 // init_player.c
-void	init_player(t_scene *scene);
+void		init_player(t_scene *scene);
 
 // init_events.c
-void	init_events(t_scene *scene);
-void	close_handler(void* param);
+void		init_events(t_scene *scene);
+void		close_handler(void* param);
 
 // moves.c
-void	moving_north(t_scene *scene, float move_x, float move_y);
-void	moving_south(t_scene *scene, float move_x, float move_y);
-void	moving_east(t_scene *scene, float right_x, float right_y);
-void	moving_west(t_scene *scene, float right_x, float right_y);
+void		moving_north(t_scene *scene, float move_x, float move_y);
+void		moving_south(t_scene *scene, float move_x, float move_y);
+void		moving_east(t_scene *scene, float right_x, float right_y);
+void		moving_west(t_scene *scene, float right_x, float right_y);
 
 // collision.c
-int		check_walls_around(t_scene *scene, int x, int y);
+int			check_walls_around(t_scene *scene, int x, int y);
+
+// textures.c
+uint32_t	get_pixel(mlx_texture_t *texture);
+void		select_texture(t_scene *scene, mlx_texture_t *texture);

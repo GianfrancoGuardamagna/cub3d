@@ -1,62 +1,29 @@
 #include "cub3d.h"
 
-uint32_t	get_pixel(mlx_texture_t *texture)
-{
-	int	i;
-
-	i = (texture->y * texture->width + texture->x) * 4;
-	return (
-		(texture->pixels[i] << 24)
-		| (texture->pixels[i + 1] << 16)
-		| (texture->pixels[i + 2] << 8)
-		| texture->pixels[i + 3]
-	);
-}
-
-void select_texture(t_scene *scene, mlx_texture_t *texture)
-{
-	if (scene->ray.side == 0 && scene->ray.step_x > 0)
-		*texture = *scene->texture.wall_W;
-	else if (scene->ray.side == 0 && scene->ray.step_x < 0)
-		*texture = *scene->texture.wall_E;
-	else if (scene->ray.side == 1 && scene->ray.step_y > 0)
-		*texture = *scene->texture.wall_N;
-	else
-		*texture = *scene->texture.wall_S;
-}
-
-void draw_vertical_line(t_scene *scene, int wall_height, int pos)
+//I modified the "mlx_texture_t" data type so it contains now {int x; int y}
+static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 {
 	int				y;
 	int				center;
 	mlx_texture_t	*texture;
-//	int				offset;
-//	unsigned int	color;
 
-	//Falta gestionar si falla memoria
 	texture = malloc(sizeof(mlx_texture_t));
-	if(!texture)
-		return ;
-
+	if (!texture)
+		error_call(scene, 4, "Failed to initialize texture");
 	select_texture(scene, texture);
 	center = HEIGHT / 2 - wall_height / 2;
-
-	//I modified the "mlx_texture_t" data type so it contains now {int x; int y}
-	//En que situaciones se da este error?
 	texture->x = (int)(scene->ray.wall_x * texture->width);
 	if ((unsigned int)texture->x >= texture->width)
 		texture->x = texture->width - 1;
-
 	y = 0;
 	while (y < center)
 		mlx_put_pixel(scene->img, pos, y++, scene->ceiling.color);
 	while (y < center + wall_height && y < HEIGHT)
 	{
-		texture->y = (int)(((float)(y - center) / wall_height) * texture->height);
+		texture->y = (int)(((float)(y - center) / wall_height) \
+* texture->height);
 		if ((unsigned int)texture->y >= texture->height)
 			texture->y = texture->height - 1;
-//		offset = (texture->y * texture->width) + (texture->x * (texture->bytes_per_pixel / 8));
-//		color = *(unsigned int *)(scene->wall.pixels_ptr + offset);
 		mlx_put_pixel(scene->img, pos, y++, get_pixel(texture));
 	}
 	while (y < HEIGHT)
@@ -77,7 +44,8 @@ void	analize_fov(t_scene *scene)
 	while (x < WIDTH)
 	{
 		offset = PLAYER_FOV / 2 - ((float)x / WIDTH) * PLAYER_FOV;
-		if ((distance = dda(scene, offset)) <= 0)
+		distance = dda(scene, offset);
+		if (distance <= 0)
 		{
 			x++;
 			continue ;
@@ -89,17 +57,78 @@ void	analize_fov(t_scene *scene)
 	}
 }
 
-int main(void)
+void	paint_mapcell(t_scene *scene, int row, int col)
 {
-	t_scene *scene;
+	int	minimap_width;
+	int	minimap_height;
+	int	x;
+	int	y;
+	int	map_row_cell;
+	int	map_col_cell;
+	int	margin;
+	(void)row;
+	(void)col;
 
-	scene = init_scene(&scene);
+	margin = 20;
+	minimap_width = WIDTH / 4 + margin; //valor limite de pixeles hasta los que se puede pintar
+	minimap_height = HEIGHT / 4 + margin;
+
+	x = margin;
+	while(x < minimap_width)
+	{
+		y = margin;
+		map_row_cell = x / (minimap_width / (MAP_WIDTH - 1));
+		while(y < minimap_height)
+		{
+			map_col_cell = y / (minimap_height / (MAP_HEIGHT - 1));
+			if(scene->map[map_col_cell][map_row_cell] == 1)
+				mlx_put_pixel(scene->img, x, y, 4294967285);
+			else if(scene->map[map_col_cell][map_row_cell] == 0)
+				mlx_put_pixel(scene->img, x, y, 3294967285);
+			else
+				mlx_put_pixel(scene->img, x, y, 2294967285);
+			y++;
+		}
+		x++;
+	}
+
+
+}
+
+//void	create_minimap(t_scene *scene)
+//{
+//	int	i;
+//	int	j;
+
+//	i = 0;
+//	while(i < MAP_HEIGHT)
+//	{
+//		j = 0;
+//		while(j < MAP_WIDTH)
+//		{
+//			paint_mapcell(scene, i, j);
+//			j++;
+//		}
+//		i++;
+//	}
+//}
+
+int	main(void)
+{
+	t_scene	*scene;
+
+	scene = malloc(sizeof(t_scene));
+	if (!scene)
+		error_call(NULL, 0, "42");
+	init_scene(scene);
 	init_player(scene);
 	init_events(scene);
 	analize_fov(scene);
-	//HASTA AQUI LLEGO LA REFACTORIZACION Y FORMATEO
+	paint_mapcell(scene, 0, 0);
+//	create_minimap(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 	mlx_loop(scene->mlx_connection);
+	sleep(5);
 	close_handler(scene);
-	return 0;
+	return (0);
 }
