@@ -57,7 +57,7 @@ void	analize_fov(t_scene *scene)
 	}
 }
 
-void	paint_mapcell(t_scene *scene, int row, int col)
+void	paint_mapcell(t_scene *scene)
 {
 	int	minimap_width;
 	int	minimap_height;
@@ -66,23 +66,21 @@ void	paint_mapcell(t_scene *scene, int row, int col)
 	int	map_row_cell;
 	int	map_col_cell;
 	int	margin;
-	(void)row;
-	(void)col;
 
 	margin = 20;
-	minimap_width = WIDTH / 4 + margin; //valor limite de pixeles hasta los que se puede pintar
-	minimap_height = HEIGHT / 4 + margin;
+	minimap_width = WIDTH / 4; //valor limite de pixeles hasta los que se puede pintar
+	minimap_height = HEIGHT / 4;
 
 	x = margin;
-	while(x < minimap_width)
+	while(x < minimap_width + margin)
 	{
 		y = margin;
-		map_row_cell = x / (minimap_width / (MAP_WIDTH - 1));
-		while(y < minimap_height)
+		map_row_cell = ((x - margin) * MAP_WIDTH - 1) / minimap_width;
+		while(y < minimap_height + margin)
 		{
-			map_col_cell = y / (minimap_height / (MAP_HEIGHT - 1));
+			map_col_cell = ((y - margin) * MAP_HEIGHT - 1) / minimap_height;
 			if(scene->map[map_col_cell][map_row_cell] == 1)
-				mlx_put_pixel(scene->img, x, y, 4294967285);
+				mlx_put_pixel(scene->img, x, y, 1294967285);
 			else if(scene->map[map_col_cell][map_row_cell] == 0)
 				mlx_put_pixel(scene->img, x, y, 3294967285);
 			else
@@ -91,27 +89,7 @@ void	paint_mapcell(t_scene *scene, int row, int col)
 		}
 		x++;
 	}
-
-
 }
-
-//void	create_minimap(t_scene *scene)
-//{
-//	int	i;
-//	int	j;
-
-//	i = 0;
-//	while(i < MAP_HEIGHT)
-//	{
-//		j = 0;
-//		while(j < MAP_WIDTH)
-//		{
-//			paint_mapcell(scene, i, j);
-//			j++;
-//		}
-//		i++;
-//	}
-//}
 
 int	main(void)
 {
@@ -124,11 +102,9 @@ int	main(void)
 	init_player(scene);
 	init_events(scene);
 	analize_fov(scene);
-	paint_mapcell(scene, 0, 0);
-//	create_minimap(scene);
+	paint_mapcell(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 	mlx_loop(scene->mlx_connection);
-	sleep(5);
 	close_handler(scene);
 	return (0);
 }

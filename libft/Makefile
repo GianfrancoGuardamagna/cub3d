@@ -31,7 +31,7 @@ SOURCE = ft_atoi.c \
          ft_tolower.c \
          ft_calloc.c \
          ft_isprint.c \
-	 ft_isascii.c \
+	 	 ft_isascii.c \
          ft_memcpy.c \
          ft_strdup.c \
          ft_strncmp.c \

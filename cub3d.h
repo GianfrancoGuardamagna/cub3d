@@ -16,7 +16,7 @@
 #define MAP_WIDTH 7
 #endif
 #ifndef MAP_HEIGHT
-#define MAP_HEIGHT 7
+#define MAP_HEIGHT 5
 #endif
 #ifndef PLAYER_FOV
 #define PLAYER_FOV 60
@@ -105,7 +105,7 @@ typedef struct s_scene
 
 // Main
 void		analize_fov(t_scene *scene);
-void		paint_mapcell(t_scene *scene, int row, int col);
+void		paint_mapcell(t_scene *scene);
 
 // ./DDA
 // dda.c

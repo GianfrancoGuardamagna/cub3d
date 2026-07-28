@@ -9,6 +9,10 @@
 -> Puertas
 -> Sprites animados
 -> Controlas angulo de vision con el ratón
+-> El makefile no está bien, si le das a clean varias veces sigue limpiando y cosas asi
 -> Readme
 -> Chequear que cierre con la cruz de la ventana (22/07 HECHO)
 -> HUD? Oscuridad y Linternas? Musica para cuando entrás, menú de selección de mapa y musica de juego?
+
+
+MINIMAPA -> Ya se pinta, falta que actualice la posición del jugador y se podría optimizar, en vez de leer todos los pixeles, que lea el mapa y dibuje cuadrados de X*X en cada lugar

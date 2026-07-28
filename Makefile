@@ -13,7 +13,7 @@
 NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SOURCE = main.c utils/* DDA/*
+SOURCE = main.c utils/collision.c utils/error.c utils/init_events.c utils/init_player.c utils/init_scene.c utils/moves.c utils/textures.c DDA/dda.c
 OBJ = $(SOURCE:.c=.o)
 INCLUDE = cub3d.h
 LIBFT_DIR = ./libft
