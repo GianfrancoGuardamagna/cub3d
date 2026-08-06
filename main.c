@@ -57,6 +57,39 @@ void	analize_fov(t_scene *scene)
 	}
 }
 
+void	draw_player(t_scene *scene, float x, float y)
+{
+	int radius;
+	int dx;
+	int dy;
+	int cx;
+	int cy;
+	int px;
+	int py;
+
+	radius = 4;
+	cx = (int)x;
+	cy = (int)y;
+	dy = -radius;
+	while (dy <= radius)
+	{
+		dx = -radius;
+		while (dx <= radius)
+		{
+			if (dx * dx + dy * dy <= radius * radius)
+			{
+				px = cx + dx;
+				py = cy + dy;
+				if (px >= 0 && px < (int)scene->img->width
+					&& py >= 0 && py < (int)scene->img->height)
+					mlx_put_pixel(scene->img, px, py, 1595523219);
+			}
+			dx++;
+		}
+		dy++;
+	}
+}
+
 void	paint_mapcell(t_scene *scene)
 {
 	int	minimap_width;
@@ -66,6 +99,8 @@ void	paint_mapcell(t_scene *scene)
 	int	map_row_cell;
 	int	map_col_cell;
 	int	margin;
+	float	pixel_x;
+	float	pixel_y;
 
 	margin = 20;
 	minimap_width = WIDTH / 4; //valor limite de pixeles hasta los que se puede pintar
@@ -81,14 +116,15 @@ void	paint_mapcell(t_scene *scene)
 			map_col_cell = ((y - margin) * MAP_HEIGHT - 1) / minimap_height;
 			if(scene->map[map_col_cell][map_row_cell] == 1)
 				mlx_put_pixel(scene->img, x, y, 1294967285);
-			else if(scene->map[map_col_cell][map_row_cell] == 0)
-				mlx_put_pixel(scene->img, x, y, 3294967285);
 			else
-				mlx_put_pixel(scene->img, x, y, 2294967285);
+				mlx_put_pixel(scene->img, x, y, 3294967285);
 			y++;
 		}
 		x++;
 	}
+	pixel_x = margin + (scene->player.pos_x / (WIDTH / MAP_WIDTH) / MAP_WIDTH) * minimap_width;
+	pixel_y = margin + (scene->player.pos_y / (HEIGHT / MAP_HEIGHT) / MAP_HEIGHT) * minimap_height;
+	draw_player(scene, pixel_x, pixel_y);
 }
 
 int	main(void)

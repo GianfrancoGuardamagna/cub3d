@@ -5,7 +5,7 @@
 -> Formatear el codigo según norma y jerarquizar bien los archivos (22/07 TODO SEGUN NORMA) (dda.c tiene 6 funciones dentro)
 -> Las wall collision son del bonus pero están en el archivo utils/moves.c
 -> MAP_WIDTH Y MAP_HEIGHT EN EL .h son los valores máximos, cambiar nombre?
--> Minimapa
+-> Minimapa (HECHO 06/08)
 -> Puertas
 -> Sprites animados
 -> Controlas angulo de vision con el ratón
