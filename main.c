@@ -3,7 +3,12 @@
 //I modified the "mlx_texture_t" data type so it contains now {int x; int y}
 static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 {
-	int				y;
+	//! COMENTAR PARA PODER PARSEAR
+	(void)scene;
+	(void)wall_height;
+	(void)pos;
+
+/* 	int				y;
 	int				center;
 	mlx_texture_t	*texture;
 
@@ -28,7 +33,7 @@ static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 	}
 	while (y < HEIGHT)
 		mlx_put_pixel(scene->img, pos, y++, scene->floor.color);
-	free(texture);
+	free(texture); */
 }
 
 //distance = distance * cos(offset * M_PI / 180)
