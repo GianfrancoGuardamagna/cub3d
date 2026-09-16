@@ -2,10 +2,7 @@
 
 uint32_t	get_pixel(mlx_texture_t *texture)
 {
-	//! COMENTO FUNCION PARA PODER PARSEAR TRANQUILAMENTE
-	(void)texture;
-	return (0);
-/* 	int	i;
+	int	i;
 
 	i = (texture->y * texture->width + texture->x) * 4;
 	return (
@@ -13,7 +10,7 @@ uint32_t	get_pixel(mlx_texture_t *texture)
 		| (texture->pixels[i + 1] << 16)
 		| (texture->pixels[i + 2] << 8)
 		| texture->pixels[i + 3]
-	); */
+	);
 }
 
 void	select_texture(t_scene *scene, mlx_texture_t *texture)

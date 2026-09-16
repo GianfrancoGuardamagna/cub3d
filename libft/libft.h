@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gguardam <gguardam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 16:26:18 by gguardam          #+#    #+#             */
-/*   Updated: 2025/05/12 15:20:50 by gguardam         ###   ########.fr       */
+/*   Updated: 2026/09/16 15:35:27 by carmegon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <stdint.h>
 # include <limits.h>
 # include <unistd.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 int		ft_atoi(const char *str);
 void	ft_bzero(void *s, size_t n);
@@ -55,6 +59,15 @@ char	*ft_substr(const char *s, unsigned int start, size_t len);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 long	ft_atol(const char *str);
+char	*ft_free_gnl(char **str);
+char	*ft_extract_line(char *stash);
+char	*ft_update_line(char *stash);
+char	*get_next_line(int fd);
+char	*ft_strjoin_gnl(char *stash, char *str);
+size_t	ft_strlen_gnl(char *s);
+char	*ft_substr_gnl(char *stash, unsigned int start, size_t len);
+char	*ft_strchr_gnl(char *stash, char c);
+
 
 typedef struct s_list
 {

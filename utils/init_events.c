@@ -53,7 +53,7 @@ static void	game_loop(void *param)
 	scene = param;
 	handle_move(scene);
 	analize_fov(scene);
-	paint_mapcell(scene);
+	//paint_mapcell(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 }
 
