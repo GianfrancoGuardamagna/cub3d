@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gguardam <gguardam@student.42.fr>          +#+  +:+       +#+         #
+#    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/07/03 13:13:31 by gguardam         ###   ########.fr        #
+#    Updated: 2026/09/16 18:06:51 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 MLX_DIR = ./MLX42
 MLX = $(MLX_DIR)/build/libmlx42.a
-LIBS = -L$(MLX_DIR)/build -lmlx42 -L$(LIBFT_DIR) -Iinclude -ldl -lglfw -pthread -lm
+LIBS = -L$(MLX_DIR)/build -lmlx42 -L$(LIBFT_DIR) -lft -Iinclude -ldl -lglfw -pthread -lm
 INCLUDES = -I. -I$(LIBFT_DIR) -I$(MLX_DIR)
 RM = rm -f
 

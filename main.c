@@ -128,20 +128,24 @@ void	analize_fov(t_scene *scene)
 	draw_player(scene, pixel_x, pixel_y);
 } */
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_scene	*scene;
 
-	scene = malloc(sizeof(t_scene));
+	if (ac != 2)
+		return (0);
+	scene = ft_calloc(1, sizeof(t_scene));
 	if (!scene)
 		error_call(NULL, 0, "42");
-	init_scene(scene);
+
+
+/* 	init_scene(scene);
 	init_player(scene);
 	init_events(scene);
 	analize_fov(scene);
-	//paint_mapcell(scene);
+	paint_mapcell(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
-	mlx_loop(scene->mlx_connection);
+	mlx_loop(scene->mlx_connection); */
 	close_handler(scene);
 	return (0);
 }

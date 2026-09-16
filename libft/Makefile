@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gguardam <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/03 16:26:25 by gguardam          #+#    #+#              #
-#    Updated: 2025/05/12 15:21:14 by gguardam         ###   ########.fr        #
+#    Updated: 2026/09/16 18:03:32 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,7 +50,9 @@ SOURCE = ft_atoi.c \
          ft_isalnum.c \
          ft_memmove.c \
          ft_strlcat.c \
-         ft_strnstr.c
+         ft_strnstr.c \
+		 get_next_line_utils.c \
+		 get_next_line.c
 
 BONUS_SOURCE = ft_lstsize_bonus.c \
                ft_lstlast_bonus.c \

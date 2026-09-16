@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "./libft/libft.h"
 
 #ifndef WIDTH
 #define WIDTH 900
