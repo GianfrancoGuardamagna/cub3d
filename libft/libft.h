@@ -6,7 +6,7 @@
 /*   By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 16:26:18 by gguardam          #+#    #+#             */
-/*   Updated: 2026/09/16 15:35:27 by carmegon         ###   ########.fr       */
+/*   Updated: 2026/09/18 16:13:25 by carmegon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdint.h>
 # include <limits.h>
 # include <unistd.h>
+# include <stdarg.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -67,6 +68,15 @@ char	*ft_strjoin_gnl(char *stash, char *str);
 size_t	ft_strlen_gnl(char *s);
 char	*ft_substr_gnl(char *stash, unsigned int start, size_t len);
 char	*ft_strchr_gnl(char *stash, char c);
+int		ft_fprint_char(int fd, int c);
+int		ft_fprint_hex_bottom(int fd, unsigned long long num);
+int		ft_fprint_hex_top(int fd, unsigned int num);
+int		ft_fprint_specifier(int fd, char specifier, va_list input);
+int		ft_fprintf(int fd, char const *chain, ...);
+int		ft_fprint_nbr(int fd, int num);
+int		ft_fprint_ptr(int fd, void *ptr);
+int		ft_fprint_str(int fd, char *str);
+int		ft_fprint_uns(int fd, unsigned int num);
 
 
 typedef struct s_list

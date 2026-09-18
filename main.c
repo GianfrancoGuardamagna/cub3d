@@ -133,7 +133,10 @@ int	main(int ac, char **av)
 	t_scene	*scene;
 
 	if (ac != 2)
+	{
+		ft_ftprintf(2, "Invalid number of av. Ej: ./cub3d map.cub");
 		return (0);
+	}
 	scene = ft_calloc(1, sizeof(t_scene));
 	if (!scene)
 		error_call(NULL, 0, "42");

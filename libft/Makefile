@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/05/03 16:26:25 by gguardam          #+#    #+#              #
-#    Updated: 2026/09/16 18:03:32 by carmegon         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = libft.a
 
 CC = cc
@@ -52,7 +40,9 @@ SOURCE = ft_atoi.c \
          ft_strlcat.c \
          ft_strnstr.c \
 		 get_next_line_utils.c \
-		 get_next_line.c
+		 get_next_line.c \
+		 ft_fprintf.c \
+		 ft_fprintf_complements.c
 
 BONUS_SOURCE = ft_lstsize_bonus.c \
                ft_lstlast_bonus.c \

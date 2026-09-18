@@ -138,3 +138,6 @@ int			check_walls_around(t_scene *scene, int x, int y);
 // textures.c
 uint32_t	get_pixel(mlx_texture_t *texture);
 void		select_texture(t_scene *scene, mlx_texture_t *texture);
+
+// parsing - check_file
+int			check_extension(char *str);

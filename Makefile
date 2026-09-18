@@ -6,14 +6,25 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/09/16 18:06:51 by carmegon         ###   ########.fr        #
+#    Updated: 2026/09/18 18:21:57 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SOURCE = main.c utils/collision.c utils/error.c utils/init_events.c utils/init_player.c utils/init_scene.c utils/moves.c utils/textures.c DDA/dda.c
+SOURCE = main.c \
+		utils/collision.c \
+		utils/error.c \
+		utils/init_events.c \
+		utils/init_player.c \
+		utils/init_scene.c \
+		utils/moves.c \
+		utils/textures.c \
+		DDA/dda.c \
+		utils/parsing/check_extension.c 
+
+
 OBJ = $(SOURCE:.c=.o)
 INCLUDE = cub3d.h
 LIBFT_DIR = ./libft
