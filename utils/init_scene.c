@@ -22,6 +22,7 @@ static void	loading_struct(t_scene *scene)
 		error_call(scene, 4, "Failed to initialize texture");
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
+	scene->camera = -1;
 }
 
 static void	populate_map(t_scene *scene, int map_width, \

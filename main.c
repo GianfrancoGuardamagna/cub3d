@@ -5,30 +5,26 @@ static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 {
 	int				y;
 	int				center;
-	mlx_texture_t	*texture;
+	mlx_texture_t	texture; //-->Paso de Heap a Stack y nos ahorramos un free() y un malloc() en cada vuelta
 
-	texture = malloc(sizeof(mlx_texture_t));
-	if (!texture)
-		error_call(scene, 4, "Failed to initialize texture");
-	select_texture(scene, texture);
+	select_texture(scene, &texture);
 	center = HEIGHT / 2 - wall_height / 2;
-	texture->x = (int)(scene->ray.wall_x * texture->width);
-	if ((unsigned int)texture->x >= texture->width)
-		texture->x = texture->width - 1;
+	texture.x = (int)(scene->ray.wall_x * texture.width);
+	if ((unsigned int)texture.x >= texture.width)
+		texture.x = texture.width - 1;
 	y = 0;
 	while (y < center)
 		mlx_put_pixel(scene->img, pos, y++, scene->ceiling.color);
 	while (y < center + wall_height && y < HEIGHT)
 	{
-		texture->y = (int)(((float)(y - center) / wall_height) \
-* texture->height);
-		if ((unsigned int)texture->y >= texture->height)
-			texture->y = texture->height - 1;
-		mlx_put_pixel(scene->img, pos, y++, get_pixel(texture));
+		texture.y = (int)(((float)(y - center) / wall_height) \
+* texture.height);
+		if ((unsigned int)texture.y >= texture.height)
+			texture.y = texture.height - 1;
+		mlx_put_pixel(scene->img, pos, y++, get_pixel(&texture));
 	}
 	while (y < HEIGHT)
 		mlx_put_pixel(scene->img, pos, y++, scene->floor.color);
-	free(texture);
 }
 
 //distance = distance * cos(offset * M_PI / 180)
@@ -141,6 +137,6 @@ int	main(void)
 	paint_mapcell(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 	mlx_loop(scene->mlx_connection);
-	close_handler(scene);
+	//close_handler(scene); --> Doble free, uno ejecutado por el usuario y otro metido en el main
 	return (0);
 }

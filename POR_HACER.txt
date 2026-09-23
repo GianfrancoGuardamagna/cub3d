@@ -13,6 +13,6 @@
 -> Readme
 -> Chequear que cierre con la cruz de la ventana (22/07 HECHO)
 -> HUD? Oscuridad y Linternas? Musica para cuando entrás, menú de selección de mapa y musica de juego?
-
-
 MINIMAPA -> Ya se pinta, falta que actualice la posición del jugador y se podría optimizar, en vez de leer todos los pixeles, que lea el mapa y dibuje cuadrados de X*X en cada lugar
+
+-> Movimiento dependiente de FPS: handle_move/handle_camera mueven una cantidad fija por frame. El subject permite gettimeofday() explícitamente en la lista de funciones autorizadas — es una pista de que se espera velocidad independiente del framerate (delta time). Ahora mismo si el loop corre más rápido en una máquina, el jugador se moverá más rápido.

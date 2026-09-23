@@ -24,8 +24,9 @@
 #ifndef PLAYER_RADIUS
 #define PLAYER_RADIUS 15
 #endif
+//--> Por seguridad ya que si se compila con -std=c99 puede haber errores en la definicion de M_PI por parte de la librería
 #ifndef M_PI
-#define M_PI 3.1415
+#define M_PI 3.14159265358979323846
 #endif
 
 typedef struct s_player
@@ -101,6 +102,8 @@ typedef struct s_scene
 	t_ray ray;
 	int **map;
 	t_texture texture;
+	int	camera;
+	double	last_mouse_x;
 }	t_scene;
 
 // Main
