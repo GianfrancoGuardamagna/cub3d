@@ -7,10 +7,10 @@
 #include <unistd.h>
 
 #ifndef WIDTH
-#define WIDTH 900
+#define WIDTH 1800
 #endif
 #ifndef HEIGHT
-#define HEIGHT 600
+#define HEIGHT 1200
 #endif
 #ifndef MAP_WIDTH
 #define MAP_WIDTH 7

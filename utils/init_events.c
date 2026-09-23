@@ -1,5 +1,15 @@
 #include "cub3d.h"
 
+static void drink_animation(t_scene *scene)
+{
+	(void) scene;
+	// mlx_load_png()
+	// mlx_image_to_window()
+	// mlx_new_image(scene->mlx_connection, );
+	write(1, "matecito\n", 9);
+	return ;
+}
+
 static void	handle_camera_keys(t_scene *scene)
 {
 	float	old_dir_x;
@@ -37,6 +47,8 @@ static void	handle_key_event(mlx_key_data_t keydata, void *param)
 		else
 			mlx_set_cursor_mode(scene->mlx_connection, MLX_MOUSE_NORMAL);
 	}
+	if(keydata.key == MLX_KEY_M && keydata.action == MLX_PRESS)
+		drink_animation(scene);
 	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
 		mlx_close_window(scene->mlx_connection); // <-- ya no llames close_handler aquí
 		//close_handler(scene);
@@ -56,7 +68,7 @@ static void	handle_camera_mouse(double xpos, double ypos, void *param)
 		scene->last_mouse_x = xpos;
 		return ;
 	}
-	sensitivity = 0.003;
+	sensitivity = 0.001;
 	delta_x = xpos - scene->last_mouse_x;
 	scene->last_mouse_x = xpos;
 	old_dir_x = scene->player.dir_x;
