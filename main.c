@@ -131,24 +131,27 @@ void	analize_fov(t_scene *scene)
 int	main(int ac, char **av)
 {
 	t_scene	*scene;
+	(void)av;
 
 	if (ac != 2)
 	{
-		ft_ftprintf(2, "Invalid number of av. Ej: ./cub3d map.cub");
+		ft_fprintf(2, "Invalid number of av. Ej: ./cub3d map.cub\n");
 		return (0);
 	}
-	scene = ft_calloc(1, sizeof(t_scene));
-	if (!scene)
-		error_call(NULL, 0, "42");
-
-
-/* 	init_scene(scene);
-	init_player(scene);
-	init_events(scene);
-	analize_fov(scene);
-	paint_mapcell(scene);
-	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
-	mlx_loop(scene->mlx_connection); */
-	close_handler(scene);
+	if (check_extension(av[1]) == 0)
+	{
+		printf("llego2\n");
+		scene = ft_calloc(1, sizeof(t_scene));
+		if (!scene)
+			error_call(NULL, 0, "42");
+		/* 	init_scene(scene);
+		init_player(scene);
+		init_events(scene);
+		analize_fov(scene);
+		paint_mapcell(scene);
+		mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
+		mlx_loop(scene->mlx_connection); */
+		close_handler(scene);
+	}
 	return (0);
 }
