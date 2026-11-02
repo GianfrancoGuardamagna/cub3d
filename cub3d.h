@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "./libft/libft.h"
 
 #ifndef WIDTH
@@ -40,18 +41,20 @@ typedef struct s_player
 
 typedef struct s_floor
 {
-	int	r;
-	int	g;
-	int	b;
-	unsigned long color;
+	int				r;
+	int				g;
+	int				b;
+	unsigned long	color;
+	char			*f;
 }	t_floor;
 
 typedef struct s_ceiling
 {
-	int	r;
-	int	g;
-	int	b;
-	unsigned long color;
+	int				r;
+	int				g;
+	int				b;
+	unsigned long	color;
+	char			*c;
 }	t_ceiling;
 
 typedef struct s_img
@@ -86,10 +89,14 @@ typedef struct s_ray
 
 typedef struct s_texture
 {
-	mlx_texture_t *wall_N;
-	mlx_texture_t *wall_E;
-	mlx_texture_t *wall_S;
-	mlx_texture_t *wall_W;
+	mlx_texture_t	*wall_N;
+	mlx_texture_t	*wall_E;
+	mlx_texture_t	*wall_S;
+	mlx_texture_t	*wall_W;
+	char			*north;
+	char			*east;
+	char			*south;
+	char			*west;
 }	t_texture;
 
 typedef struct s_scene
@@ -140,4 +147,11 @@ uint32_t	get_pixel(mlx_texture_t *texture);
 void		select_texture(t_scene *scene, mlx_texture_t *texture);
 
 // parsing - check_file
-int			check_extension(char *str);
+int		check_extension(char *str);
+int		read_fd(char *file, t_scene *scene); // Abro archivo y llamo al gnl para la lectura de este
+int		check_info(t_scene *scene); //Compruebo si estan los punteros de las texturas, cielo y suelo vacios
+void	check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
+char	*save_textures(t_scene *scene, char *line); 
+
+
+

@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/09/18 18:21:57 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/02 20:25:01 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,15 +14,16 @@ NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SOURCE = main.c \
-		utils/collision.c \
-		utils/error.c \
-		utils/init_events.c \
-		utils/init_player.c \
-		utils/init_scene.c \
-		utils/moves.c \
-		utils/textures.c \
+		src/collision.c \
+		src/error.c \
+		src/init_events.c \
+		src/init_player.c \
+		src/init_scene.c \
+		src/moves.c \
+		src/textures.c \
 		DDA/dda.c \
-		utils/parsing/check_extension.c 
+		src/parsing/check_extension.c \
+		src/utils/utils 
 
 
 OBJ = $(SOURCE:.c=.o)
