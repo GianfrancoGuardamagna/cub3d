@@ -151,7 +151,7 @@ int		check_extension(char *str);
 int		read_fd(char *file, t_scene *scene); // Abro archivo y llamo al gnl para la lectura de este
 int		check_info(t_scene *scene); //Compruebo si estan los punteros de las texturas, cielo y suelo vacios
 void	check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
-char	*save_textures(t_scene *scene, char *line); 
+char	*save_textures(char *line); 
 
 
 

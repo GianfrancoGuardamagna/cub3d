@@ -1,7 +1,4 @@
 NO ./textures/wall_N.png
-SO ./textures/wall_S.png
-WE ./textures/wall_W.png
+S O ./textures/wall_S.png
+WE            ./textures/wall_W.png
 EA ./textures/wall_E.png
-
-F 201,201,201
-C 30,30,200

@@ -32,9 +32,11 @@ int	read_fd(char *file, t_scene *scene)
 	line = get_next_line(fd);
 	while (line)
 	{
+		check_line_type(scene, line);
 		free(line);
 		line = get_next_line(fd);
 	}
+	close(fd);
 	return (0);
 }
 
@@ -52,16 +54,16 @@ int	read_fd(char *file, t_scene *scene)
 void	check_line_type(t_scene *scene, char *line)
 {
 	if (!ft_strncmp(line, "NO", 2) && !scene->texture.north)
-		scene->texture.north = save_textures(scene, line);
+		scene->texture.north = save_textures(line);
 	else if (!ft_strncmp(line, "SO", 2) && !scene->texture.south)
-		scene->texture.south = save_textures(scene, line);
+		scene->texture.south = save_textures(line);
 	else if (!ft_strncmp(line, "WE", 2) && !scene->texture.west)
-		scene->texture.west = save_textures(scene, line);
+		scene->texture.west = save_textures(line);
 	else if (!ft_strncmp(line, "EA", 2) && !scene->texture.east)
-		scene->texture.east = save_textures(scene, line);
+		scene->texture.east = save_textures(line);
 }
 //! PUEDO QUITAR DE LOS PARAMETROS T_SCENE PORQUE NO LO USO
-char	*save_textures(t_scene *scene, char *line)
+char	*save_textures(char *line)
 {
 	int		i;
 	char	*clean_path;

@@ -140,10 +140,16 @@ int	main(int ac, char **av)
 	}
 	if (check_extension(av[1]) == 0)
 	{
-		printf("llego2\n");
 		scene = ft_calloc(1, sizeof(t_scene));
 		if (!scene)
 			error_call(NULL, 0, "42");
+		read_fd(av[1], scene);
+		printf("--- TEST DE PARSEO ---\n");
+		printf("Norte: %s\n", scene->texture.north);
+		printf("Sur:   %s\n", scene->texture.south);
+		printf("Este:  %s\n", scene->texture.east);
+		printf("Oeste: %s\n", scene->texture.west);
+		printf("----------------------\n");
 		/* 	init_scene(scene);
 		init_player(scene);
 		init_events(scene);
@@ -151,7 +157,8 @@ int	main(int ac, char **av)
 		paint_mapcell(scene);
 		mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 		mlx_loop(scene->mlx_connection); */
-		close_handler(scene);
+		//close_handler(scene);
+		free(scene);
 	}
 	return (0);
 }
