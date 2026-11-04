@@ -61,8 +61,10 @@ void	check_line_type(t_scene *scene, char *line)
 		scene->texture.west = extract_data(line);
 	else if (!ft_strncmp(line, "EA", 2) && !scene->texture.east)
 		scene->texture.east = extract_data(line);
-	else if (!ft_strncmp(line, "F", 2) && !scene->floor.f)
-	
+	else if (!ft_strncmp(line, "F ", 2) && !scene->floor.f)
+		scene->floor.f = extract_data(line);
+	else if (!ft_strncmp(line, "C ", 2) && !scene->ceiling.c)
+		scene->ceiling.c = extract_data(line);
 }
 //! PUEDO QUITAR DE LOS PARAMETROS T_SCENE PORQUE NO LO USO
 char	*extract_data(char *line)
@@ -77,6 +79,38 @@ char	*extract_data(char *line)
 	if (!clean_path)
 		return (NULL);
 	return (clean_path);
+}
+
+int	valid_rgb_format(char *str)
+{
+	int	i;
+
+	if (count_commas(str) != 2)
+	{
+		ft_fprintf(2, "Error: No valid data ceiling or floor\n");
+		return (1);
+	}
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]) && str[i] != ',' && !ft_isspace(str[i]))
+			return (1);
+		else
+			i++;
+	}
+	return (0);
+}
+
+uint32_t	extract_color_numbers(char *str)
+{
+	char	**rgb;
+	int		r;
+	int		g;
+	int		b;
+
+	if (valid_rgb_format(str) == 1)
+		return (1);
+	rgb = ft_split;
 }
 
 int	check_info(t_scene *scene)

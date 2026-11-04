@@ -41,18 +41,12 @@ typedef struct s_player
 
 typedef struct s_floor
 {
-	int				r;
-	int				g;
-	int				b;
 	unsigned long	color;
 	char			*f;
 }	t_floor;
 
 typedef struct s_ceiling
 {
-	int				r;
-	int				g;
-	int				b;
 	unsigned long	color;
 	char			*c;
 }	t_ceiling;
@@ -147,11 +141,16 @@ uint32_t	get_pixel(mlx_texture_t *texture);
 void		select_texture(t_scene *scene, mlx_texture_t *texture);
 
 // parsing - check_file
-int		check_extension(char *str);
-int		read_fd(char *file, t_scene *scene); // Abro archivo y llamo al gnl para la lectura de este
-int		check_info(t_scene *scene); //Compruebo si estan los punteros de las texturas, cielo y suelo vacios
-void	check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
-char	*extract_data(char *line); 
+int			check_extension(char *str);
+int			read_fd(char *file, t_scene *scene); // Abro archivo y llamo al gnl para la lectura de este
+int			check_info(t_scene *scene); //Compruebo si estan los punteros de las texturas, cielo y suelo vacios
+void		check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
+char		*extract_data(char *line);
+int			valid_rgb_format(char *str);
+uint32_t	extract_color_numbers(char *str);
+
+//utils
+int	count_commas(char *line);
 
 
 
