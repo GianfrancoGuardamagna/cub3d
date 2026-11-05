@@ -149,6 +149,8 @@ int	main(int ac, char **av)
 		printf("Sur:   %s\n", scene->texture.south);
 		printf("Este:  %s\n", scene->texture.east);
 		printf("Oeste: %s\n", scene->texture.west);
+		printf("Floor: %s\n", scene->floor.f);
+		printf("Ceiling: %s\n", scene->ceiling.c);
 		printf("----------------------\n");
 		/* 	init_scene(scene);
 		init_player(scene);

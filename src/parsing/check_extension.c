@@ -81,19 +81,19 @@ char	*extract_data(char *line)
 	return (clean_path);
 }
 
-int	valid_rgb_format(char *str)
+int	valid_rgb_format(char *line)
 {
 	int	i;
 
-	if (count_commas(str) != 2)
+	if (count_commas(line) != 2)
 	{
 		ft_fprintf(2, "Error: No valid data ceiling or floor\n");
 		return (1);
 	}
 	i = 0;
-	while (str[i])
+	while (line[i])
 	{
-		if (!ft_isdigit(str[i]) && str[i] != ',' && !ft_isspace(str[i]))
+		if (!ft_isdigit(line[i]) && line[i] != ',' && !ft_isspace(line[i]))
 			return (1);
 		else
 			i++;
@@ -101,16 +101,16 @@ int	valid_rgb_format(char *str)
 	return (0);
 }
 
-uint32_t	extract_color_numbers(char *str)
+uint32_t	extract_color_numbers(char *line)
 {
 	char	**rgb;
 	int		r;
 	int		g;
 	int		b;
 
-	if (valid_rgb_format(str) == 1)
+	if (valid_rgb_format(line) == 1)
 		return (1);
-	rgb = ft_split;
+	rgb = ft_split(line, ',');
 }
 
 int	check_info(t_scene *scene)
