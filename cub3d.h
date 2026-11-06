@@ -41,14 +41,14 @@ typedef struct s_player
 
 typedef struct s_floor
 {
-	unsigned long	color;
-	char			*f;
+	uint32_t	color;
+	char		*f;
 }	t_floor;
 
 typedef struct s_ceiling
 {
-	unsigned long	color;
-	char			*c;
+	uint32_t	color;
+	char		*c;
 }	t_ceiling;
 
 typedef struct s_img
@@ -150,7 +150,8 @@ int			valid_rgb_format(char *str);
 uint32_t	extract_color_numbers(char *str);
 
 //utils
-int	count_commas(char *line);
+int		count_commas(char *line);
+void	ft_free_matrix(char **array);
 
 
 

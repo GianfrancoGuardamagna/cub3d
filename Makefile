@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/04 13:55:48 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/06 14:42:14 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SOURCE = main.c \
 		src/textures.c \
 		DDA/dda.c \
 		src/parsing/check_extension.c \
-		src/utils/utils 
+		src/utils/utils.c
 
 
 OBJ = $(SOURCE:.c=.o)

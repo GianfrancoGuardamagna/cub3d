@@ -40,16 +40,6 @@ int	read_fd(char *file, t_scene *scene)
 	return (0);
 }
 
-//! ME FALTA LA COMPROBACION DEL ELSE IF DEL SUELO Y DEL CIELO
-/* int	check_line_type(t_scene *scene, char *line)
-{
-	if (!ft_strncmp(line, "NO", 2) || !ft_strncmp(line, "SO", 2)
-		|| !ft_strncmp(line, "WE", 2) || !ft_strncmp(line, "EA", 2))
-		return (extract_data(scene, line));
-	else if (line[0] != '\n')
-		return (1);
-	return (0);
-} */
 
 void	check_line_type(t_scene *scene, char *line)
 {
@@ -101,6 +91,7 @@ int	valid_rgb_format(char *line)
 	return (0);
 }
 
+//! QUITAR EL EXIT Y LLAMAR A CLEAN_EXIT
 uint32_t	extract_color_numbers(char *line)
 {
 	char	**rgb;
@@ -111,6 +102,21 @@ uint32_t	extract_color_numbers(char *line)
 	if (valid_rgb_format(line) == 1)
 		return (1);
 	rgb = ft_split(line, ',');
+	if (!rgb)
+	{
+		ft_fprintf(2, "Error allocated memory\n");
+		return (1);
+	}
+	r = ft_atoi(rgb[0]);
+	g = ft_atoi(rgb[1]);
+	b = ft_atoi(rgb[2]);
+	ft_free_matrix(rgb);
+	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+	{
+		ft_fprintf(2, "Error: invalid color\n");
+		return (1);
+	}
+	return ((r << 24) | (g << 16) | (b << 8) | 255);
 }
 
 int	check_info(t_scene *scene)

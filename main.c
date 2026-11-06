@@ -144,13 +144,19 @@ int	main(int ac, char **av)
 		if (!scene)
 			error_call(NULL, 0, "42");
 		read_fd(av[1], scene);
+		if (scene->floor.f)
+			scene->floor.color = extract_color_numbers(scene->floor.f);
+		if (scene->ceiling.c)
+			scene->ceiling.color = extract_color_numbers(scene->ceiling.c);
 		printf("--- TEST DE PARSEO ---\n");
 		printf("Norte: %s\n", scene->texture.north);
 		printf("Sur:   %s\n", scene->texture.south);
 		printf("Este:  %s\n", scene->texture.east);
 		printf("Oeste: %s\n", scene->texture.west);
-		printf("Floor: %s\n", scene->floor.f);
-		printf("Ceiling: %s\n", scene->ceiling.c);
+		printf("Floor (crudo): %s\n", scene->floor.f);
+		printf("Floor (Empaquetado HEX): %X\n", scene->floor.color);
+		printf("Ceiling (Crudo): %s\n", scene->ceiling.c);
+		printf("Ceiling (Empaquetado HEX): %X\n", scene->ceiling.color);
 		printf("----------------------\n");
 		/* 	init_scene(scene);
 		init_player(scene);
