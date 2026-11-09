@@ -93,16 +93,23 @@ typedef struct s_texture
 	char			*west;
 }	t_texture;
 
+typedef struct s_map
+{
+	char	**grid;
+	int		rows;
+	int		cols;
+}	t_map;
+
 typedef struct s_scene
 {
-	void	*mlx_connection;
-	mlx_image_t *img;
-	t_ceiling ceiling;
-	t_floor floor;
-	t_player player;
-	t_ray ray;
-	int **map;
-	t_texture texture;
+	void			*mlx_connection;
+	mlx_image_t		*img;
+	t_ceiling		ceiling;
+	t_floor			floor;
+	t_player		player;
+	t_ray			ray;
+	t_map			map;
+	t_texture		texture;
 }	t_scene;
 
 // Main

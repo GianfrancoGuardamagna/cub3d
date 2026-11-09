@@ -32,7 +32,21 @@ int	read_fd(char *file, t_scene *scene)
 	line = get_next_line(fd);
 	while (line)
 	{
-		check_line_type(scene, line);
+		if (line[0] == '1' || line[0] == ' ')
+		{
+			if (check_info(scene) != 0)
+			{
+				ft_fprintf(2, "Error: Missing textures or colors before map\n");
+				free(line);
+				close(fd);
+				return (1);
+			}
+			//* AQUI IRIA LA LLAMADA AL PARSEO DEL MAPA (return (parse_map))
+			printf("Comenzamos lectura del mapa: %s\n", line);
+			break ;
+		}
+		else if (line[0] != '\n')
+			check_line_type(scene, line);
 		free(line);
 		line = get_next_line(fd);
 	}
