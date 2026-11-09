@@ -56,7 +56,6 @@ void	check_line_type(t_scene *scene, char *line)
 	else if (!ft_strncmp(line, "C ", 2) && !scene->ceiling.c)
 		scene->ceiling.c = extract_data(line);
 }
-//! PUEDO QUITAR DE LOS PARAMETROS T_SCENE PORQUE NO LO USO
 char	*extract_data(char *line)
 {
 	int		i;
@@ -84,15 +83,17 @@ int	valid_rgb_format(char *line)
 	while (line[i])
 	{
 		if (!ft_isdigit(line[i]) && line[i] != ',' && !ft_isspace(line[i]))
+		{
+			ft_fprintf(2, "Error: Invalid character in color\n");
 			return (1);
+		}
 		else
 			i++;
 	}
 	return (0);
 }
 
-//! QUITAR EL EXIT Y LLAMAR A CLEAN_EXIT
-uint32_t	extract_color_numbers(char *line)
+int	extract_color_numbers(char *line, uint32_t *dest_color)
 {
 	char	**rgb;
 	int		r;
@@ -116,7 +117,8 @@ uint32_t	extract_color_numbers(char *line)
 		ft_fprintf(2, "Error: invalid color\n");
 		return (1);
 	}
-	return ((r << 24) | (g << 16) | (b << 8) | 255);
+	*dest_color = ((r << 24) | (g << 16) | (b << 8) | 255);
+	return (0);
 }
 
 int	check_info(t_scene *scene)

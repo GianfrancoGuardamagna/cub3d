@@ -147,11 +147,13 @@ int			check_info(t_scene *scene); //Compruebo si estan los punteros de las textu
 void		check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
 char		*extract_data(char *line);
 int			valid_rgb_format(char *str);
-uint32_t	extract_color_numbers(char *str);
+int			extract_color_numbers(char *line, uint32_t *dest_color);
 
 //utils
-int		count_commas(char *line);
-void	ft_free_matrix(char **array);
+int			count_commas(char *line);
+void		ft_free_matrix(char **array);
+void		clean_exit(t_scene *scene);
+int			error_colors(t_scene *scene);
 
 
 

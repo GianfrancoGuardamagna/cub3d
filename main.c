@@ -143,11 +143,13 @@ int	main(int ac, char **av)
 		scene = ft_calloc(1, sizeof(t_scene));
 		if (!scene)
 			error_call(NULL, 0, "42");
-		read_fd(av[1], scene);
-		if (scene->floor.f)
-			scene->floor.color = extract_color_numbers(scene->floor.f);
-		if (scene->ceiling.c)
-			scene->ceiling.color = extract_color_numbers(scene->ceiling.c);
+		if (read_fd(av[1], scene) == 1)
+		{
+			clean_exit(scene);
+			return (1);
+		}
+		if (error_colors(scene) == 1)
+			return (1);
 		printf("--- TEST DE PARSEO ---\n");
 		printf("Norte: %s\n", scene->texture.north);
 		printf("Sur:   %s\n", scene->texture.south);
@@ -166,7 +168,7 @@ int	main(int ac, char **av)
 		mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
 		mlx_loop(scene->mlx_connection); */
 		//close_handler(scene);
-		free(scene);
+		clean_exit(scene);
 	}
 	return (0);
 }
