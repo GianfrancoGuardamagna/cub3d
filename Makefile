@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/09 18:13:54 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/13 20:56:13 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,10 @@ SOURCE = main.c \
 		src/init_scene.c \
 		src/moves.c \
 		src/textures.c \
-		DDA/dda.c \
 		src/parsing/check_extension.c \
+		src/parsing/parse_config.c \
+		src/parsing/valid_color.c \
+		src/parsing/valid_map.c \
 		src/utils/utils.c \
 		src/utils/error.c
 

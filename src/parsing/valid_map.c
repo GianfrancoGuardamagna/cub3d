@@ -59,6 +59,6 @@ int	parse_map(t_scene *scene, char *first_line, int fd)
 		scene->map.grid = tmp_grid;
 		line = get_next_line(fd);
 	}
-	scene->map.grid = get_grid_rows(scene->map.grid);
+	scene->map.rows = get_grid_rows(scene->map.grid);
 	return (0);
 }

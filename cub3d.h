@@ -150,6 +150,7 @@ void		select_texture(t_scene *scene, mlx_texture_t *texture);
 // parsing - check_file
 int			check_extension(char *str);
 int			read_fd(char *file, t_scene *scene); // Abro archivo y llamo al gnl para la lectura de este
+int			handle_map_start(t_scene *scene, char *line, int fd);
 int			check_info(t_scene *scene); //Compruebo si estan los punteros de las texturas, cielo y suelo vacios
 void		check_line_type(t_scene *scene, char *line); // Comparamos si line = a los puntos cardinales, el cielo o el suelo. Si lo es entramos en las funciones correspondientes
 char		*extract_data(char *line);
@@ -160,6 +161,7 @@ int			extract_color_numbers(char *line, uint32_t *dest_color);
 int			parse_map(t_scene *scene, char *first_line, int fd);
 char		**expand_grid(char **old_grid, char *new_line);
 int			get_grid_rows(char **grid);
+
 //utils
 int			count_commas(char *line);
 void		ft_free_matrix(char **array);

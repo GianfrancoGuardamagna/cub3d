@@ -1,7 +1,7 @@
 #include "cub3d.h"
 
 //I modified the "mlx_texture_t" data type so it contains now {int x; int y}
-static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
+/* static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 {
 	int				y;
 	int				center;
@@ -29,11 +29,11 @@ static void	draw_vertical_line(t_scene *scene, int wall_height, int pos)
 	while (y < HEIGHT)
 		mlx_put_pixel(scene->img, pos, y++, scene->floor.color);
 	free(texture);
-}
+} */
 
 //distance = distance * cos(offset * M_PI / 180)
 //Modified value for avoiding fisheye
-void	analize_fov(t_scene *scene)
+/* void	analize_fov(t_scene *scene)
 {
 	int		x;
 	float	offset;
@@ -55,7 +55,7 @@ void	analize_fov(t_scene *scene)
 		draw_vertical_line(scene, visual_height, x);
 		x++;
 	}
-}
+} */
 
 // !FUNCION MINIMAPA
 /* void	draw_player(t_scene *scene, float x, float y)
@@ -131,7 +131,7 @@ void	analize_fov(t_scene *scene)
 int	main(int ac, char **av)
 {
 	t_scene	*scene;
-	(void)av;
+	int		i = 0;
 
 	if (ac != 2)
 	{
@@ -159,6 +159,18 @@ int	main(int ac, char **av)
 		printf("Floor (Empaquetado HEX): %X\n", scene->floor.color);
 		printf("Ceiling (Crudo): %s\n", scene->ceiling.c);
 		printf("Ceiling (Empaquetado HEX): %X\n", scene->ceiling.color);
+		printf("----------------------\n");
+		printf("--- MAPA ---\n");
+		if (scene->map.grid)
+		{
+			while (scene->map.grid[i])
+			{
+				printf("%s", scene->map.grid[i]);
+				i++;
+			}
+			printf("\n");
+			printf("Total de filas: %d\n", scene->map.rows);
+		}
 		printf("----------------------\n");
 		/* 	init_scene(scene);
 		init_player(scene);

@@ -1,6 +1,6 @@
 #include "../cub3d.h"
 
-static unsigned long	createRGB(int r, int g, int b)
+/* static unsigned long	createRGB(int r, int g, int b)
 {
 	return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
@@ -22,9 +22,9 @@ static void	loading_struct(t_scene *scene)
 		error_call(scene, 4, "Failed to initialize texture");
 	scene->floor.color = createRGB(220, 110, 0);
 	scene->ceiling.color = createRGB(225, 30, 0);
-}
+} */
 
-static void	populate_map(t_scene *scene, int map_width, \
+/* static void	populate_map(t_scene *scene, int map_width, \
 int map_height, int map[][7])
 {
 	int	i;
@@ -60,4 +60,4 @@ void	init_scene(t_scene *scene)
 
 	loading_struct(scene);
 	populate_map(scene, MAP_WIDTH, MAP_HEIGHT, map);
-}
+} */

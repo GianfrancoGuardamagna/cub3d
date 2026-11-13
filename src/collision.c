@@ -7,7 +7,7 @@ static int	is_wall(t_scene *scene, int x, int y)
 
 	cell_width = WIDTH / MAP_WIDTH;
 	cell_height = HEIGHT / MAP_HEIGHT;
-	if (scene->map[y / cell_height][x / cell_width] == 1)
+	if (scene->map.grid[y / cell_height][x / cell_width] == '1')
 		return (1);
 	else
 		return (0);

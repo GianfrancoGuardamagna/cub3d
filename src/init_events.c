@@ -1,6 +1,6 @@
 #include "cub3d.h"
 
-static void	handle_camera(t_scene *scene)
+/* static void	handle_camera(t_scene *scene)
 {
 	float	old_dir_x;
 
@@ -44,9 +44,9 @@ static void	handle_move(t_scene *scene)
 	handle_camera(scene);
 	if (mlx_is_key_down(scene->mlx_connection, MLX_KEY_ESCAPE))
 		close_handler(scene);
-}
+} */
 
-static void	game_loop(void *param)
+/* static void	game_loop(void *param)
 {
 	t_scene	*scene;
 
@@ -55,9 +55,9 @@ static void	game_loop(void *param)
 	analize_fov(scene);
 	//paint_mapcell(scene);
 	mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0);
-}
+} */
 
-void	close_handler(void *param)
+/* void	close_handler(void *param)
 {
 	t_scene	*scene;
 	int		i;
@@ -83,10 +83,10 @@ void	close_handler(void *param)
 	if (scene->mlx_connection)
 		mlx_terminate(scene->mlx_connection);
 	free (scene);
-}
+} */
 
-void	init_events(t_scene *scene)
+/* void	init_events(t_scene *scene)
 {
 	mlx_close_hook(scene->mlx_connection, &close_handler, scene);
 	mlx_loop_hook(scene->mlx_connection, &game_loop, scene);
-}
+} */

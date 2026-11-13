@@ -48,5 +48,7 @@ void	clean_exit(t_scene *scene)
 		free(scene->floor.f);
 	if (scene->ceiling.c)
 		free(scene->ceiling.c);
+	if (scene->map.grid)
+		ft_free_matrix(scene->map.grid);
 	free(scene);
 }

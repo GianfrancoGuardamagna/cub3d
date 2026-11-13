@@ -1,6 +1,6 @@
 #include "../cub3d.h"
 
-static void	init_ray(t_ray *ray, t_player *player, float fov_offset)
+/* static void	init_ray(t_ray *ray, t_player *player, float fov_offset)
 {
 	ray->cell_w = WIDTH / MAP_WIDTH;
 	ray->cell_h = HEIGHT / MAP_HEIGHT;
@@ -88,9 +88,9 @@ ray->dir_y, ray->cell_h) / ray->cell_h;
 ray->dir_x, ray->cell_w) / ray->cell_w;
 	if (ray->wall_x < 0)
 		ray->wall_x += 1.0f;
-}
+} */
 
-float	dda(t_scene *scene, float fov_offset)
+/* float	dda(t_scene *scene, float fov_offset)
 {
 	float	dist;
 
@@ -101,4 +101,4 @@ float	dda(t_scene *scene, float fov_offset)
 		return (-1);
 	calc_wall_hit(&scene->ray, &scene->player, dist);
 	return (dist);
-}
+} */

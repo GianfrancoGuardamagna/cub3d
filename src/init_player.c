@@ -1,6 +1,6 @@
 #include "../cub3d.h"
 
-static void	dir_vector(t_scene *scene, int i, int j)
+/* static void	dir_vector(t_scene *scene, int i, int j)
 {
 	if (scene->map[i][j] == 'N')
 	{
@@ -55,4 +55,4 @@ scene->map[i][j] == 'E')
 		}
 		i++;
 	}
-}
+} */
