@@ -156,11 +156,16 @@ char		*extract_data(char *line);
 int			valid_rgb_format(char *str);
 int			extract_color_numbers(char *line, uint32_t *dest_color);
 
+// parsing map
+int			parse_map(t_scene *scene, char *first_line, int fd);
+char		**expand_grid(char **old_grid, char *new_line);
+int			get_grid_rows(char **grid);
 //utils
 int			count_commas(char *line);
 void		ft_free_matrix(char **array);
 void		clean_exit(t_scene *scene);
 int			error_colors(t_scene *scene);
+
 
 
 

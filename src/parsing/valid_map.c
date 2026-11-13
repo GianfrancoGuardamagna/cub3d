@@ -42,7 +42,7 @@ int	parse_map(t_scene *scene, char *first_line, int fd)
 	scene->map.grid = malloc(sizeof(char *) * 2);
 	if (!scene->map.grid)
 	{
-		ft_fprintf(2, "Error allocated memory\n");
+		free(first_line);
 		return (1);
 	}
 	scene->map.grid[0] = first_line;
@@ -52,7 +52,13 @@ int	parse_map(t_scene *scene, char *first_line, int fd)
 	{
 		tmp_grid = expand_grid(scene->map.grid, line);
 		if (!tmp_grid)
-			
+		{
+			free(line);
+			return (1);
+		}
+		scene->map.grid = tmp_grid;
+		line = get_next_line(fd);
 	}
+	scene->map.grid = get_grid_rows(scene->map.grid);
 	return (0);
 }

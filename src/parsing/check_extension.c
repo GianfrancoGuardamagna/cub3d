@@ -41,9 +41,12 @@ int	read_fd(char *file, t_scene *scene)
 				close(fd);
 				return (1);
 			}
-			//* AQUI IRIA LA LLAMADA AL PARSEO DEL MAPA (return (parse_map))
-			printf("Comenzamos lectura del mapa: %s\n", line);
-			break ;
+			if (parse_map(scene, line, fd) == 1)
+			{
+				ft_fprintf(2, "Error allocated memory\n");
+				close(fd);
+				return (1);
+			}
 		}
 		else if (line[0] != '\n')
 			check_line_type(scene, line);
