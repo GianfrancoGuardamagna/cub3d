@@ -18,6 +18,45 @@ int	check_extension(char *str)
 	return (0);
 }
 
+int	check_info(t_scene *scene)
+{
+	if (!scene->texture.north || !scene->texture.east
+		|| !scene->texture.south || !scene->texture.west)
+	{
+		ft_fprintf(2, "Error: Missing textures\n");
+		return (1);
+	}
+	if (!scene->floor.f || !scene->ceiling.c)
+	{
+		ft_fprintf(2, "Error: Missing floor or ceiling color\n");
+		return (1);
+	}
+	return (0);
+}
+
+static int	handle_map_start(t_scene *scene, char *line, int fd)
+{
+	if (check_info(scene) != 0)
+	{
+		free(line);
+		return (1);
+	}
+	if (parse_map(scene, line, fd) == 1)
+	{
+		ft_fprintf(2, "Error allocated memory\n");
+		return (1);
+	}
+	return (0);
+}
+
+static int	check_eof_errors(t_scene *scene)
+{
+	if (check_info(scene) != 0)
+		return (1);
+	ft_fprintf(2, "Error: No map found in file\n");
+	return (1);
+}
+
 int	read_fd(char *file, t_scene *scene)
 {
 	int		fd;
@@ -42,35 +81,5 @@ int	read_fd(char *file, t_scene *scene)
 		line = get_next_line(fd);
 	}
 	close(fd);
-	ft_fprintf(2, "Error: No map found in file\n");
-	return (0);
-}
-
-int	handle_map_start(t_scene *scene, char *line, int fd)
-{
-	if (check_info(scene) != 0)
-	{
-		ft_fprintf(2, "Error: Missing textures or colors before map\n");
-		free(line);
-		close(fd);
-		return (1);
-	}
-	if (parse_map(scene, line, fd) == 1)
-	{
-		ft_fprintf(2, "Error allocated memory\n");
-		close(fd);
-		return (1);
-	}
-	return (0);
-}
-
-
-int	check_info(t_scene *scene)
-{
-	if (!scene->texture.north || !scene->texture.east
-		|| !scene->texture.south || !scene->texture.west)
-		return (1);
-	if (!scene->floor.f || !scene->ceiling.c)
-		return (2);
-	return (0);
+	return (check_eof_errors(scene));
 }

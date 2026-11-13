@@ -6,13 +6,13 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/13 20:56:13 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/13 21:12:20 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3
 SOURCE = main.c \
 		src/collision.c \
 		src/error.c \
