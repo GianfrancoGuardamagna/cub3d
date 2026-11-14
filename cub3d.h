@@ -164,6 +164,12 @@ int			parse_map(t_scene *scene, char *first_line, int fd);
 char		**expand_grid(char **old_grid, char *new_line);
 int			get_grid_rows(char **grid);
 
+// validated map
+int			is_open(t_scene *scene, int y, int x);
+int			touches_void(t_scene *scene, int y, int x);
+int			check_close_map(t_scene *scene);
+
+
 //utils
 int			count_commas(char *line);
 void		ft_free_matrix(char **array);

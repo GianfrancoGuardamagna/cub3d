@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/14 15:18:39 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/14 19:47:57 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,8 @@ SOURCE = main.c \
 		src/parsing/valid_color.c \
 		src/parsing/parse_map.c \
 		src/parsing/read_fd.c \
+		src/parsing/read_fd.c \
+		src/parsing/valid_map.c \
 		src/utils/utils.c \
 		src/utils/error.c
 

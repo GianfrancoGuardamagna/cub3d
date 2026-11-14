@@ -34,7 +34,7 @@ int	check_info(t_scene *scene)
 	return (0);
 }
 
-static int	handle_map_start(t_scene *scene, char *line, int fd)
+int	handle_map_start(t_scene *scene, char *line, int fd)
 {
 	if (check_info(scene) != 0)
 	{
@@ -49,7 +49,7 @@ static int	handle_map_start(t_scene *scene, char *line, int fd)
 	return (0);
 }
 
-static int	check_eof_errors(t_scene *scene)
+int	check_eof_errors(t_scene *scene)
 {
 	if (check_info(scene) != 0)
 		return (1);
