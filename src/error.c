@@ -12,3 +12,15 @@ void	error_call(t_scene *scene, int status, char *msg)
 	//close_handler(scene);
 	exit(1);
 }
+
+void	drain_gnl(int fd)
+{
+	char	*tmp;
+
+	tmp = get_next_line(fd);
+	while (tmp)
+	{
+		free(tmp);
+		tmp = get_next_line(fd);
+	}
+}

@@ -120,9 +120,11 @@ void		paint_mapcell(t_scene *scene);
 // dda.c
 float		dda(t_scene *scene, float fov_offset);
 
-// ./utils
+
 // error.c
 void		error_call(t_scene *scene, int status, char *msg);
+void		drain_gnl(int fd);
+
 
 // init_scene.c
 void		init_scene(t_scene *scene);
@@ -167,7 +169,5 @@ int			count_commas(char *line);
 void		ft_free_matrix(char **array);
 void		clean_exit(t_scene *scene);
 int			error_colors(t_scene *scene);
-
-
 
 
