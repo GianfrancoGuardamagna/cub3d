@@ -4,7 +4,7 @@ int	is_open(t_scene *scene, int y, int x)
 {
 	if (y < 0 || y >= scene->map.rows || x < 0)
 		return (1);
-	if (x >= ft_strlen(scene->map.grid[y]))
+	if (x >= (int)ft_strlen(scene->map.grid[y]))
 		return (1);
 	if (scene->map.grid[y][x] == ' ' || scene->map.grid[y][x] == '\n')
 		return (1);

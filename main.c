@@ -150,6 +150,11 @@ int	main(int ac, char **av)
 		}
 		if (error_colors(scene) == 1)
 			return (1);
+		if (validate_map(scene) == 1)
+		{
+			clean_exit(scene);
+			return (1);
+		}
 		printf("--- TEST DE PARSEO ---\n");
 		printf("Norte: %s\n", scene->texture.north);
 		printf("Sur:   %s\n", scene->texture.south);
