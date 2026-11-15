@@ -125,73 +125,61 @@ typedef struct s_scene
 	double			last_mouse_x;
 }	t_scene;
 
-// Main
-void		analize_fov(t_scene *scene);
-void		paint_mapcell(t_scene *scene);
+/* render, minimap, dda, collisions, movement, textures */
+void			analize_fov(t_scene *scene);
+void			paint_mapcell(t_scene *scene);
+float			dda(t_scene *scene, float fov_offset);
+int				is_wall_cell(t_scene *scene, int y, int x);
+int				check_walls_around(t_scene *scene, int x, int y);
+void			moving_north(t_scene *scene, float move_x, float move_y);
+void			moving_south(t_scene *scene, float move_x, float move_y);
+void			moving_east(t_scene *scene, float right_x, float right_y);
+void			moving_west(t_scene *scene, float right_x, float right_y);
+uint32_t		get_pixel(mlx_texture_t *texture, int x, int y);
+mlx_texture_t	*select_texture(t_scene *scene);
 
-// ./DDA
-// dda.c
-float		dda(t_scene *scene, float fov_offset);
+/* init and events */
+void			init_scene(t_scene *scene);
+void			init_player(t_scene *scene);
+void			init_events(t_scene *scene);
+void			rotate_player(t_scene *scene, double angle);
+void			handle_camera_keys(t_scene *scene);
+void			handle_camera_mouse(double xpos, double ypos, void *param);
+void			handle_key_event(mlx_key_data_t keydata, void *param);
 
+/* errors and cleanup */
+void			error_call(t_scene *scene, int status, char *msg);
+void			drain_gnl(int fd);
+void			clean_exit(t_scene *scene);
 
-// error.c
-void		error_call(t_scene *scene, int status, char *msg);
-void		drain_gnl(int fd);
+/* parsing - file and header lines */
+int				check_extension(char *str);
+int				read_fd(char *file, t_scene *scene);
+int				check_info(t_scene *scene);
+void			check_line_type(t_scene *scene, char *line);
+char			*extract_data(char *line);
+int				handle_map_start(t_scene *scene, char *line, int fd);
+int				check_eof_errors(t_scene *scene);
 
+/* parsing - colors */
+int				valid_rgb_format(char *str);
+int				extract_color_numbers(char *line, uint32_t *dest_color);
+int				error_colors(t_scene *scene);
+int				count_commas(char *line);
+void			ft_free_matrix(char **array);
 
-// init_scene.c
-void		init_scene(t_scene *scene);
+/* parsing - map */
+int				parse_map(t_scene *scene, char *first_line, int fd);
+char			**expand_grid(char **old_grid, char *new_line);
+int				get_grid_rows(char **grid);
+int				get_grid_cols(char **grid);
 
-// init_player.c
-void		init_player(t_scene *scene);
-
-// init_events.c
-void		init_events(t_scene *scene);
-void		close_handler(void* param);
-
-// moves.c
-void		moving_north(t_scene *scene, float move_x, float move_y);
-void		moving_south(t_scene *scene, float move_x, float move_y);
-void		moving_east(t_scene *scene, float right_x, float right_y);
-void		moving_west(t_scene *scene, float right_x, float right_y);
-
-// collision.c
-int			check_walls_around(t_scene *scene, int x, int y);
-
-// textures.c
-uint32_t	get_pixel(mlx_texture_t *texture);
-void		select_texture(t_scene *scene, mlx_texture_t *texture);
-
-// parsing - check_file
-int			check_extension(char *str);
-int			read_fd(char *file, t_scene *scene);
-int			check_info(t_scene *scene);
-void		check_line_type(t_scene *scene, char *line);
-char		*extract_data(char *line);
-int			valid_rgb_format(char *str);
-int			extract_color_numbers(char *line, uint32_t *dest_color);
-int			handle_map_start(t_scene *scene, char *line, int fd);
-int			check_eof_errors(t_scene *scene);
-
-// parsing map
-int			parse_map(t_scene *scene, char *first_line, int fd);
-char		**expand_grid(char **old_grid, char *new_line);
-int			get_grid_rows(char **grid);
-int			get_grid_cols(char **grid);
-
-// validate map
-int			is_open(t_scene *scene, int y, int x);
-int			touches_void(t_scene *scene, int y, int x);
-int			check_close_map(t_scene *scene);
-int			check_row(char *row, int *players);
-int			check_chars_and_player(t_scene *scene);
-int			validate_map(t_scene *scene);
-
-
-//utils
-int			count_commas(char *line);
-void		ft_free_matrix(char **array);
-void		clean_exit(t_scene *scene);
-int			error_colors(t_scene *scene);
+/* validate map */
+int				is_open(t_scene *scene, int y, int x);
+int				touches_void(t_scene *scene, int y, int x);
+int				check_close_map(t_scene *scene);
+int				check_row(char *row, int *players);
+int				check_chars_and_player(t_scene *scene);
+int				validate_map(t_scene *scene);
 
 #endif

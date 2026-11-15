@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/15 15:53:45 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/15 16:09:56 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,14 @@ SOURCE = main.c \
 		src/init/init_events.c \
 		src/init/init_player.c \
 		src/init/init_scene.c \
+		src/init/camera.c \
+		src/init/events.c \
 		src/collision.c \
-		src/utils/error.c \
 		src/moves.c \
 		src/textures.c \
+		src/dda.c \
+		src/minimap.c \
+		src/render.c \
 		src/parsing/check_extension.c \
 		src/parsing/parse_config.c \
 		src/parsing/valid_color.c \
@@ -29,6 +33,7 @@ SOURCE = main.c \
 		src/parsing/valid_map.c \
 		src/parsing/valid_chars.c \
 		src/parsing/error_colors.c \
+		src/utils/error.c \
 		src/utils/utils.c \
 		src/utils/clean_and_exit.c \
 
