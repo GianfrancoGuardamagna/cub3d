@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/15 15:08:38 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/15 15:53:45 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,11 @@ NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g3
 SOURCE = main.c \
+		src/init/init_events.c \
+		src/init/init_player.c \
+		src/init/init_scene.c \
 		src/collision.c \
-		src/error.c \
-		src/init_events.c \
-		src/init_player.c \
-		src/init_scene.c \
+		src/utils/error.c \
 		src/moves.c \
 		src/textures.c \
 		src/parsing/check_extension.c \

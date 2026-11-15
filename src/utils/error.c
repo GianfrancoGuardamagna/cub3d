@@ -1,4 +1,4 @@
-#include "../cub3d.h"
+#include "../../cub3d.h"
 
 void	error_call(t_scene *scene, int status, char *msg)
 {
