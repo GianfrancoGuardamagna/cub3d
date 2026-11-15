@@ -1,34 +1,45 @@
-#include "MLX42/include/MLX42/MLX42.h"
-#include <math.h>
-#include <X11/X.h>
-#include <X11/keysym.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include "./libft/libft.h"
+#ifndef CUB3D_H
+# define CUB3D_H
 
-#ifndef WIDTH
-#define WIDTH 900
-#endif
-#ifndef HEIGHT
-#define HEIGHT 600
-#endif
-#ifndef MAP_WIDTH
-#define MAP_WIDTH 7
-#endif
-#ifndef MAP_HEIGHT
-#define MAP_HEIGHT 5
-#endif
-#ifndef PLAYER_FOV
-#define PLAYER_FOV 60
-#endif
-#ifndef PLAYER_RADIUS
-#define PLAYER_RADIUS 15
-#endif
-#ifndef M_PI
-#define M_PI 3.1415
-#endif
+# include "MLX42/include/MLX42/MLX42.h"
+# include <math.h>
+# include <X11/X.h>
+# include <X11/keysym.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include "./libft/libft.h"
+
+# ifndef WIDTH
+#  define WIDTH 900
+# endif
+# ifndef HEIGHT
+#  define HEIGHT 600
+# endif
+/* # ifndef MAP_WIDTH
+#  define MAP_WIDTH 7
+# endif
+# ifndef MAP_HEIGHT
+#  define MAP_HEIGHT 5
+# endif */
+# ifndef PLAYER_FOV
+#  define PLAYER_FOV 60
+# endif
+# ifndef PLAYER_RADIUS
+#  define PLAYER_RADIUS 15
+# endif
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
+# define CELL_SIZE 128
+# define ROT_SPEED 0.05235987756
+# define MOUSE_SENS 0.001
+# define MINI_MARGIN 20
+# define MINI_PLAYER_R 4
+# define MINI_WALL 0x4D2FA1F5
+# define MINI_FLOOR 0xC46535F5
+# define MINI_PLAYER 0x5F19C093
 
 typedef struct s_player
 {
@@ -51,7 +62,7 @@ typedef struct s_ceiling
 	char		*c;
 }	t_ceiling;
 
-typedef struct s_img
+/* typedef struct s_img
 {
 	void	*img_ptr;
 	char	*pixels_ptr;
@@ -60,7 +71,7 @@ typedef struct s_img
 	int		line_len;
 	int		width;
 	int		height;
-}	t_img;
+}	t_img; */
 
 typedef struct s_ray
 {
@@ -83,10 +94,10 @@ typedef struct s_ray
 
 typedef struct s_texture
 {
-	mlx_texture_t	*wall_N;
-	mlx_texture_t	*wall_E;
-	mlx_texture_t	*wall_S;
-	mlx_texture_t	*wall_W;
+	mlx_texture_t	*wall_n;
+	mlx_texture_t	*wall_e;
+	mlx_texture_t	*wall_s;
+	mlx_texture_t	*wall_w;
 	char			*north;
 	char			*east;
 	char			*south;
@@ -110,6 +121,8 @@ typedef struct s_scene
 	t_ray			ray;
 	t_map			map;
 	t_texture		texture;
+	int				camera;
+	double			last_mouse_x;
 }	t_scene;
 
 // Main
@@ -180,4 +193,4 @@ void		ft_free_matrix(char **array);
 void		clean_exit(t_scene *scene);
 int			error_colors(t_scene *scene);
 
-
+#endif
