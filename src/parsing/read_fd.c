@@ -8,7 +8,7 @@ int	read_fd(char *file, t_scene *scene)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (ft_fprintf(2, "Error: Open file\n"), 1);
+		return (ft_fprintf(2, "Error\nCannot open file\n"), 1);
 	line = get_next_line(fd);
 	while (line)
 	{

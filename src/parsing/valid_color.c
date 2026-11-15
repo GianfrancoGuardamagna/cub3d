@@ -35,7 +35,7 @@ int	extract_color_numbers(char *line, uint32_t *dest_color)
 	rgb = ft_split(line, ',');
 	if (!rgb)
 	{
-		ft_fprintf(2, "Error allocated memory\n");
+		ft_fprintf(2, "Error\nMemory allocation failed\n");
 		return (1);
 	}
 	r = ft_atoi(rgb[0]);
@@ -44,7 +44,7 @@ int	extract_color_numbers(char *line, uint32_t *dest_color)
 	ft_free_matrix(rgb);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 	{
-		ft_fprintf(2, "Error: invalid color\n");
+		ft_fprintf(2, "Error\nInvalid color. Use R, G, B from 0 to 255\n");
 		return (1);
 	}
 	*dest_color = ((r << 24) | (g << 16) | (b << 8) | 255);
