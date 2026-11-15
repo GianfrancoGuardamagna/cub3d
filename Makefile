@@ -6,7 +6,7 @@
 #    By: carmegon <carmegon@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/06 12:00:00 by gguardam          #+#    #+#              #
-#    Updated: 2026/11/15 14:37:15 by carmegon         ###   ########.fr        #
+#    Updated: 2026/11/15 15:08:38 by carmegon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,8 @@ SOURCE = main.c \
 		src/parsing/valid_map.c \
 		src/parsing/valid_chars.c \
 		src/parsing/error_colors.c \
-		src/utils/utils.c 
+		src/utils/utils.c \
+		src/utils/clean_and_exit.c \
 
 
 OBJ = $(SOURCE:.c=.o)
