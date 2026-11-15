@@ -177,6 +177,7 @@ int			check_eof_errors(t_scene *scene);
 int			parse_map(t_scene *scene, char *first_line, int fd);
 char		**expand_grid(char **old_grid, char *new_line);
 int			get_grid_rows(char **grid);
+int			get_grid_cols(char **grid);
 
 // validate map
 int			is_open(t_scene *scene, int y, int x);

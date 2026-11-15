@@ -46,5 +46,6 @@ int	validate_map(t_scene *scene)
 		return (1);
 	if (check_close_map(scene) == 1)
 		return (1);
+	scene->map.cols = get_grid_cols(scene->map.grid);
 	return (0);
 }

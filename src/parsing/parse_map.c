@@ -12,6 +12,26 @@ int	get_grid_rows(char **grid)
 	return (i);
 }
 
+int	get_grid_cols(char **grid)
+{
+	int	y;
+	int	len;
+	int	max;
+
+	y = 0;
+	max = 0;
+	while (grid && grid[y])
+	{
+		len = ft_strlen(grid[y]);
+		if (len > 0 && grid[y][len - 1] == '\n')
+			len--;
+		if (len > max)
+			max = len;
+		y++;
+	}
+	return (max);
+}
+
 char	**expand_grid(char **old_grid, char *new_line)
 {
 	char	**new_grid;
