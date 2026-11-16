@@ -50,5 +50,6 @@ void	clean_exit(t_scene *scene)
 		free(scene->ceiling.c);
 	if (scene->map.grid)
 		ft_free_matrix(scene->map.grid);
+	free_graphics(scene);
 	free(scene);
 }
