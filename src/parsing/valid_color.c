@@ -6,7 +6,7 @@ int	valid_rgb_format(char *line)
 
 	if (count_commas(line) != 2)
 	{
-		ft_fprintf(2, "Error: No valid data ceiling or floor\n");
+		ft_fprintf(2, "Error\nNo valid data ceiling or floor\n");
 		return (1);
 	}
 	i = 0;
@@ -14,7 +14,7 @@ int	valid_rgb_format(char *line)
 	{
 		if (!ft_isdigit(line[i]) && line[i] != ',' && !ft_isspace(line[i]))
 		{
-			ft_fprintf(2, "Error: Invalid character in color\n");
+			ft_fprintf(2, "Error\nInvalid character in color\n");
 			return (1);
 		}
 		else

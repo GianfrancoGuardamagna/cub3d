@@ -43,7 +43,7 @@ int	handle_map_start(t_scene *scene, char *line, int fd)
 	}
 	if (parse_map(scene, line, fd) == 1)
 	{
-		ft_fprintf(2, "Error\n Memory allocation failed\n");
+		ft_fprintf(2, "Error\nMemory allocation failed\n");
 		return (1);
 	}
 	return (0);
