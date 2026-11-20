@@ -1,4 +1,4 @@
-#include "../cub3d.h"
+#include "../../cub3d.h"
 
 static void	dir_vector(t_scene *scene, char c)
 {

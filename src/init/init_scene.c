@@ -1,4 +1,4 @@
-#include "../cub3d.h"
+#include "../../cub3d.h"
 
 static void	load_texture(t_scene *scene, mlx_texture_t **dst, char *path)
 {
@@ -25,5 +25,6 @@ void	init_scene(t_scene *scene)
 		error_call(scene, 3, "Failed to initialize image");
 	if (mlx_image_to_window(scene->mlx_connection, scene->img, 0, 0) < 0)
 		error_call(scene, 3, "Failed to display image");
+	mlx_set_setting(MLX_STRETCH_IMAGE, true);
 	scene->camera = -1;
 }
